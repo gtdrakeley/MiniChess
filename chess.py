@@ -155,7 +155,7 @@ def moves_evaluated():
     return []
 
 
-def move(str_in):
+def move(str_in: str):
     # perform the supplied move (for example 'a5-a4\n') and update the state of the game / your internal variables
     # accordingly - note that it advised to do a sanity check of the supplied move
 
@@ -176,14 +176,14 @@ def move_greedy():
     return 'c5-c4\n'
 
 
-def move_negamax(depth, duration):
+def move_negamax(depth: int, duration: int):
     # perform a negamax move and return it - one example output is given below - note that you can call the the other
     # functions in here
 
     return 'c5-c4\n'
 
 
-def move_alphabeta(depth, duration):
+def move_alphabeta(depth: int, duration: int):
     # perform a alphabeta move and return it - one example output is given below - note that you can call the the other
     # functions in here
 
