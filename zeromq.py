@@ -30,7 +30,7 @@ def start(main_int_zeromq, main_str_name):
     while zeromq_bool_running:
         # CHANGES - json_in variable does not need to be set to None at the end of the file as this call will overwrite
         # the previous object and cause it to be garbage collected just the same.
-        json_in = json.loads(socket_handle.recv())
+        json_in = json.loads(socket_handle.recv().decode())
 
         if json_in['strFunction'] == 'ping':
             json_out['strOut'] = main_str_name
@@ -101,7 +101,7 @@ def start(main_int_zeromq, main_str_name):
         elif json_in['strFunction'] == 'chess_undo':
             chess.undo()
 
-        socket_handle.send(json.dumps(json_out))
+        socket_handle.send(json.dumps(json_out).encode())
 
     socket_handle.close()
     context_handle.close()

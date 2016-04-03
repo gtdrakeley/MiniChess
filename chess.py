@@ -38,7 +38,8 @@ def board_set(str_in):
 def winner():
     # determine the winner of the current states of the game and return '?' or '=' or 'W' or 'B' - note that we are
     # returning a character and not a string
-
+    
+    return '?'
     pass
 
 
