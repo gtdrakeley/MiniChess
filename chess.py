@@ -18,8 +18,8 @@ def reset():
     board = ['1 W',
              'kqbnr',
              'ppppp',
-             '.....'
-             '.....'
+             '.....',
+             '.....',
              'PPPPP',
              'RNBQK']
 
@@ -69,16 +69,13 @@ def winner():
 def is_valid(int_x: int, int_y: int):
     if int_x < 0:
         return False
-
     elif int_x > 4:
         return False
-
     elif int_y < 0:
         return False
-
     elif int_y > 5:
         return False
-
+    
     return True
 
 

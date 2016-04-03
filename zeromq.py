@@ -39,7 +39,7 @@ def start(main_int_zeromq, main_str_name):
             chess.reset()
 
         elif json_in['strFunction'] == 'chess_boardGet':
-            chess.board_get()
+            json_out['strOut'] = chess.board_get()
 
         elif json_in['strFunction'] == 'chess_boardSet':
             chess.board_set(json_in['strIn'])
@@ -54,7 +54,7 @@ def start(main_int_zeromq, main_str_name):
             json_out['boolReturn'] = chess.is_enemy(json_in['strPiece'])
 
         elif json_in['strFunction'] == 'chess_isOwn':
-            json_out['boolReturn'] == chess.is_own(json_in['strPiece'])
+            json_out['boolReturn'] = chess.is_own(json_in['strPiece'])
 
         elif json_in['strFunction'] == 'chess_isNothing':
             json_out['boolReturn'] = chess.is_nothing(json_in['strPiece'])
