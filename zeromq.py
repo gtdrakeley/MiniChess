@@ -6,7 +6,7 @@
 import json
 import zmq
 import chess
-from chessai import ChessAI
+# from chessai import ChessAI
 
 zeromq_bool_running = False
 
@@ -28,7 +28,7 @@ def start(main_int_zeromq, main_str_name):
     # After the below call to dict.fromkeys() all the values will be None.
     json_out = dict.fromkeys(['strOut', 'strReturn', 'boolReturn', 'intReturn', 'intOut'])
 
-    ai = ChessAI()
+    # ai = ChessAI()
 
     while zeromq_bool_running:
         # CHANGES - json_in variable does not need to be set to None at the end of the file as this call will overwrite
@@ -39,16 +39,16 @@ def start(main_int_zeromq, main_str_name):
             json_out['strOut'] = main_str_name
 
         elif json_in['strFunction'] == 'chess_reset':
-            # chess.reset()
-            ai.reset()
+            chess.reset()
+            # ai.reset()
 
         elif json_in['strFunction'] == 'chess_boardGet':
-            # json_out['strOut'] = chess.board_get()
-            json_out['strOut'] = ai.board_get()
+            json_out['strOut'] = chess.board_get()
+            # json_out['strOut'] = ai.board_get()
 
         elif json_in['strFunction'] == 'chess_boardSet':
-            # chess.board_set(json_in['strIn'])
-            ai.board_set(json_in['strIn'])
+            chess.board_set(json_in['strIn'])
+            # ai.board_set(json_in['strIn'])
 
         elif json_in['strFunction'] == 'chess_winner':
             json_out['strReturn'] = chess.winner()
