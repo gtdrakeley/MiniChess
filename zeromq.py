@@ -100,7 +100,7 @@ def start(main_int_zeromq, main_str_name):
 
         elif json_in['strFunction'] == 'chess_move':
             # chess.move(json_in['strIn'])
-            ai.move(json_in['strIn'])
+            ai.framework_move(json_in['strIn'])
 
         elif json_in['strFunction'] == 'chess_moveRandom':
             json_out['strOut'] = chess.move_random()

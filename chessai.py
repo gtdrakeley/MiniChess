@@ -332,5 +332,14 @@ class ChessAI:
         self.move(move)
 
     def move(self, move: Move):
+        if self.playing == 'W':
+            self.playing = 'B'
+        else:
+            self.playing = 'W'
+            self.turn += 1
         self.board[move.end.row][move.end.column] = self.board[move.start.row][move.start.column]
-
+        self.board[move.start.row][move.start.column] = ord('.')
+        if move.end.row == 0 and self.board[move.end.row][move.end.column] == ord('P'):
+            self.board[move.end.row][move.end.column] = ord('Q')
+        elif move.end.row == 5 and self.board[move.end.row][move.end.column] == ord('p'):
+            self.board[move.end.row][move.end.column] = ord('q')
