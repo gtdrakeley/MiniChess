@@ -320,3 +320,17 @@ class ChessAI:
                     moves.append(Move(origin, Position(r + 1, c + 1)))
         return moves
 
+    def framework_move(self, move_str: str):
+        cnum = {'a': 0,
+                'b': 1,
+                'c': 2,
+                'd': 3,
+                'e': 4}
+        start, end = move_str.strip().split('-')
+        start, end = list(start), list(end)
+        move = Move(Position(6 - int(start[1]), cnum[start[0]]), Position(6 - int(end[1]), cnum[end[0]]))
+        self.move(move)
+
+    def move(self, move: Move):
+        self.board[move.end.row][move.end.column] = self.board[move.start.row][move.start.column]
+
