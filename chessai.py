@@ -3,8 +3,8 @@ import textwrap
 
 
 class ChessAI:
-    white_pieces = 'KQBNR'
-    black_pieces = 'kqbnr'
+    white_pieces = 'kqbnr'
+    black_pieces = 'KQBNR'
     piece_values = {'k': 10000, 'K': 10000,
                     'q': 5000, 'Q': 5000,
                     'b': 3000, 'B': 3000,
