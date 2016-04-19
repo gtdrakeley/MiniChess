@@ -56,7 +56,7 @@ def start(main_int_zeromq, main_str_name):
 
         elif json_in['strFunction'] == 'chess_isValid':
             # json_out['boolReturn'] = chess.is_valid(json_in['intX'], json_in['intY'])
-            json_out['boolReturn'] = ChessAI.is_valid(json_in['intX'], json_in['intY'])
+            json_out['boolReturn'] = ChessAI.is_valid(json_in['intY'], json_in['intX'])
 
         elif json_in['strFunction'] == 'chess_isEnemy':
             # json_out['boolReturn'] = chess.is_enemy(json_in['strPiece'])
@@ -75,11 +75,13 @@ def start(main_int_zeromq, main_str_name):
             json_out['intReturn'] = ai.eval()
 
         elif json_in['strFunction'] == 'chess_moves':
-            str_out = chess.moves()
-
-            json_out['intOut'] = len(str_out)
+            # str_out = chess.moves()
+            # json_out['intOut'] = len(str_out)
             # CHANGES - this is a more Pythonic way of calling join
-            json_out['strOut'] = ''.join(str_out)
+            # json_out['strOut'] = ''.join(str_out)
+            str_out = ai.framework_moves()
+            json_out['intOut'] = len(str_out)
+            json_out['strOut'] = str_out
 
         elif json_in['strFunction'] == 'chess_movesShuffled':
             str_out = chess.moves_shuffled()
