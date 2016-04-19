@@ -3,8 +3,8 @@ import textwrap
 
 
 class ChessAI:
-    white_pieces = 'kqbnr'
-    black_pieces = 'KQBNR'
+    white_pieces = 'KQBNR'
+    black_pieces = 'kqbnr'
     piece_values = {'k': 10000, 'K': 10000,
                     'q': 5000, 'Q': 5000,
                     'b': 3000, 'B': 3000,
@@ -35,18 +35,17 @@ class ChessAI:
         self.board = [bytearray(row.encode()) for row in board_state if len(row) > 0]
 
     def winner(self):
-        if self.turn > 40:
+        board_concat = bytearray.join(bytearray(b''), self.board)
+        if ord('k') not in board_concat and ord('K') not in board_concat:
+            return '='
+        elif ord('k') in board_concat:
+            return 'W'
+        elif ord('K') in board_concat:
+            return 'B'
+        elif self.turn > 40:
             return '='
         else:
-            board_concat = bytearray.join(bytearray(b''), self.board)
-            if ord('k') in board_concat and ord('K') in board_concat:
-                return '?'
-            elif ord('k') in board_concat:
-                return 'W'
-            elif ord('K') in board_concat:
-                return 'B'
-            else:
-                return '='
+            return '?'
 
     @staticmethod
     def is_valid(int_x: int, int_y: int):
@@ -62,12 +61,12 @@ class ChessAI:
             return True
 
     def is_enemy(self, str_piece: str):
-        if self.playing == 'W' and str_piece in ChessAI.white_pieces:
-            return False
-        elif self.playing == 'B' and str_piece in ChessAI.black_pieces:
-            return False
-        else:
+        if self.playing == 'W' and str_piece in ChessAI.black_pieces:
             return True
+        elif self.playing == 'B' and str_piece in ChessAI.white_pieces:
+            return True
+        else:
+            return False
 
     def is_own(self, str_piece: str):
         if self.playing == 'W' and str_piece in ChessAI.white_pieces:
