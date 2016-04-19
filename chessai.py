@@ -103,16 +103,16 @@ class ChessAI:
 
     def framework_moves(self):
         moves = self.moves()
-        moves_strs = list()
+        moves_str = list()
         calpha = {0: 'a',
                   1: 'b',
                   2: 'c',
                   3: 'd',
                   4: 'e'}
         for move in moves:
-            moves_strs.append('{}{}-{}{}\n'.format(calpha[move.start.colum], move.start.row,
-                                                   calpha[move.end.colum], move.end.row))
-        return '\n'.join(moves_strs) + '\n'
+            moves_str.append('{}{}-{}{}\n'.format(calpha[move.start.column], 6 - move.start.row,
+                                                   calpha[move.end.column], 6 - move.end.row))
+        return moves_str
 
     def moves(self):
         moves = list()
@@ -136,8 +136,9 @@ class ChessAI:
         elif piece == 'R' or piece == 'r':
             moves.extend(self.axis_moves(r, c))
         elif piece == 'B' or piece == 'b':
-            moves.extend(self.diagonal_moves(r, c))
             moves.extend(self.bishop_moves(r, c))
+        elif piece == 'N' or piece == 'n':
+            moves.extend(self.knight_moves(r, c))
         elif piece == 'P' or piece == 'p':
             moves.extend(self.pawn_moves(r, c))
         return moves
@@ -148,22 +149,22 @@ class ChessAI:
         origin = Position(r, c)
         for offset in range(1, max_dist + 1):
             if not ublocked:
-                if ChessAI.is_valid(r + offset, c):
-                    if self.is_own(chr(self.board[r + offset][c])):
+                if ChessAI.is_valid(r - offset, c):
+                    if self.is_own(chr(self.board[r - offset][c])):
                         ublocked = True
                     else:
-                        moves.append(Move(origin, Position(r + offset, c)))
-                    if self.is_enemy(chr(self.board[r + offset][c])):
+                        moves.append(Move(origin, Position(r - offset, c)))
+                    if self.is_enemy(chr(self.board[r - offset][c])):
                         ublocked = True
                 else:
                     ublocked = True
             if not dblocked:
-                if ChessAI.is_valid(r - offset, c):
-                    if self.is_own(chr(self.board[r - offset][c])):
+                if ChessAI.is_valid(r + offset, c):
+                    if self.is_own(chr(self.board[r + offset][c])):
                         dblocked = True
                     else:
-                        moves.append(Move(origin, Position(r - offset, c)))
-                    if self.is_enemy(chr(self.board[r - offset][c])):
+                        moves.append(Move(origin, Position(r + offset, c)))
+                    if self.is_enemy(chr(self.board[r + offset][c])):
                         dblocked = True
                 else:
                     dblocked = True
@@ -237,33 +238,33 @@ class ChessAI:
         return moves
 
     def bishop_moves(self, r: int, c: int):
-        moves = list()
+        moves = set()
         origin = Position(r, c)
         if ChessAI.is_valid(r - 1, c - 1):
             if self.is_nothing(chr(self.board[r - 1][c - 1])):
-                moves.append(Move(origin, Position(r - 1, c - 1)))
+                moves.add(Move(origin, Position(r - 1, c - 1)))
         if ChessAI.is_valid(r - 1, c):
             if self.is_nothing(chr(self.board[r - 1][c])):
-                moves.append(Move(origin, Position(r - 1, c)))
+                moves.add(Move(origin, Position(r - 1, c)))
         if ChessAI.is_valid(r - 1, c + 1):
             if self.is_nothing(chr(self.board[r - 1][c + 1])):
-                moves.append(Move(origin, Position(r - 1, c + 1)))
+                moves.add(Move(origin, Position(r - 1, c + 1)))
         if ChessAI.is_valid(r, c - 1):
             if self.is_nothing(chr(self.board[r][c - 1])):
-                moves.append(Move(origin, Position(r, c - 1)))
+                moves.add(Move(origin, Position(r, c - 1)))
         if ChessAI.is_valid(r, c + 1):
             if self.is_nothing(chr(self.board[r][c + 1])):
-                moves.append(Move(origin, Position(r, c +1)))
+                moves.add(Move(origin, Position(r, c + 1)))
         if ChessAI.is_valid(r + 1, c - 1):
             if self.is_nothing(chr(self.board[r + 1][c - 1])):
-                moves.append(Move(origin, Position(r + 1, c - 1)))
+                moves.add(Move(origin, Position(r + 1, c - 1)))
         if ChessAI.is_valid(r + 1, c):
             if self.is_nothing(chr(self.board[r + 1][c])):
-                moves.append(Move(origin, Position(r + 1, c)))
+                moves.add(Move(origin, Position(r + 1, c)))
         if ChessAI.is_valid(r + 1, c + 1):
             if self.is_nothing(chr(self.board[r + 1][c + 1])):
-                moves.append(Move(origin, Position(r + 1, c + 1)))
-        return moves
+                moves.add(Move(origin, Position(r + 1, c + 1)))
+        return list(moves | set(self.diagonal_moves(r, c)))
 
     def knight_moves(self, r: int, c: int):
         moves = list()
@@ -286,10 +287,10 @@ class ChessAI:
         if ChessAI.is_valid(r + 1, c - 2):
             if not self.is_own(chr(self.board[r + 1][c - 2])):
                 moves.append(Move(origin, Position(r + 1, c - 2)))
-        if not ChessAI.is_valid(r - 1, c + 2):
+        if ChessAI.is_valid(r - 1, c + 2):
             if not self.is_own(chr(self.board[r - 1][c + 2])):
                 moves.append(Move(origin, Position(r - 1, c + 2)))
-        if not ChessAI.is_valid(r + 1, c + 2):
+        if ChessAI.is_valid(r + 1, c + 2):
             if not self.is_own(chr(self.board[r + 1][c + 2])):
                 moves.append(Move(origin, Position(r + 1, c + 2)))
         return moves
@@ -298,6 +299,16 @@ class ChessAI:
         moves = list()
         origin = Position(r, c)
         if self.playing == 'W':
+            if ChessAI.is_valid(r - 1, c):
+                if self.is_nothing(chr(self.board[r - 1][c])):
+                    moves.append(Move(origin, Position(r - 1, c)))
+            if ChessAI.is_valid(r - 1, c - 1):
+                if self.is_enemy(chr(self.board[r - 1][c - 1])):
+                    moves.append(Move(origin, Position(r - 1, c - 1)))
+            if ChessAI.is_valid(r - 1, c + 1):
+                if self.is_enemy(chr(self.board[r - 1][c + 1])):
+                    moves.append(Move(origin, Position(r - 1, c + 1)))
+        else:
             if ChessAI.is_valid(r + 1, c):
                 if self.is_nothing(chr(self.board[r + 1][c])):
                     moves.append(Move(origin, Position(r + 1, c)))
@@ -307,14 +318,5 @@ class ChessAI:
             if ChessAI.is_valid(r + 1, c + 1):
                 if self.is_enemy(chr(self.board[r + 1][c + 1])):
                     moves.append(Move(origin, Position(r + 1, c + 1)))
-        else:
-            if ChessAI.is_valid(r - 1, c):
-                if self.is_nothing(chr(self.board[r - 1][c])):
-                    moves.append(Move(origin, Position(r - 1, c)))
-            if ChessAI.is_valid(r - 1, c - 1):
-                if self.is_enemy(chr(self.board[r - 1][c - 1])):
-                    moves.append(Move(origin, Position(r - 1, c - 1)))
-            if ChessAI.is_valid(r - 1, c + 1):
-                if self.is_enemy(chr(self.board[r - 1][c - 1])):
-                    moves.append(Move(origin, Position(r - 1, c + 1)))
+        return moves
 

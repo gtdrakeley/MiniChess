@@ -79,9 +79,10 @@ def start(main_int_zeromq, main_str_name):
             # json_out['intOut'] = len(str_out)
             # CHANGES - this is a more Pythonic way of calling join
             # json_out['strOut'] = ''.join(str_out)
+            # str_out = ai.framework_moves()
             str_out = ai.framework_moves()
             json_out['intOut'] = len(str_out)
-            json_out['strOut'] = str_out
+            json_out['strOut'] = ''.join(str_out)
 
         elif json_in['strFunction'] == 'chess_movesShuffled':
             str_out = chess.moves_shuffled()
