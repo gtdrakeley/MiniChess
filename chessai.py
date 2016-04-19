@@ -36,27 +36,16 @@ class ChessAI:
         return '{} {}\n{}\n'.format(self.turn, self.playing, '\n'.join(map(bytearray.decode, self.board)))
 
     def board_set(self, board_str):
-        print('board_set:')
-        for row in board_str.split('\n'):
-            print('\t' + row)
         turn_state, *board_state = board_str.split('\n')
         turn, playing = turn_state.split()
         self.turn, self.playing = int(turn), playing
         self.board = [bytearray(row.encode()) for row in board_state if len(row) > 0]
-        print('\tafter:')
-        for row in self.board:
-            print('\t\t' + row.decode())
 
     def winner(self):
-        print('winner: {} {}'.format(self.playing, self.turn))
-        for row in self.board:
-            print('\t{}'.format(row.decode()))
         board_concat = bytearray.join(bytearray(b''), self.board).decode()
-        if 'k' not in board_concat and 'K' not in board_concat:
-            return '='
-        elif 'k' in board_concat:
+        if 'K' in board_concat and 'k' not in board_concat:
             return 'W'
-        elif 'K' in board_concat:
+        elif 'K' not in board_concat and 'k' in board_concat:
             return 'B'
         elif self.turn > 40:
             return '='
@@ -77,7 +66,6 @@ class ChessAI:
             return True
 
     def is_enemy(self, str_piece: str):
-        print('is_enemy: {} {}'.format(self.playing, str_piece))
         if self.playing == 'W' and str_piece in ChessAI.black_pieces:
             return True
         elif self.playing == 'B' and str_piece in ChessAI.white_pieces:
@@ -86,7 +74,6 @@ class ChessAI:
             return False
 
     def is_own(self, str_piece: str):
-        print('is_own: {} {}'.format(self.playing, str_piece))
         if self.playing == 'W' and str_piece in ChessAI.white_pieces:
             return True
         elif self.playing == 'B' and str_piece in ChessAI.black_pieces:

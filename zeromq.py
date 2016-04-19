@@ -67,7 +67,7 @@ def start(main_int_zeromq, main_str_name):
             json_out['boolReturn'] = ai.is_own(json_in['strPiece'])
 
         elif json_in['strFunction'] == 'chess_isNothing':
-            json_out['boolReturn'] = chess.is_nothing(json_in['strPiece'])
+            # json_out['boolReturn'] = chess.is_nothing(json_in['strPiece'])
             json_out['boolReturn'] = ChessAI.is_nothing(json_in['strPiece'])
 
         elif json_in['strFunction'] == 'chess_eval':
