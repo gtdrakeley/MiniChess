@@ -136,6 +136,7 @@ class ChessAI:
         elif piece == 'R' or piece == 'r':
             moves.extend(self.axis_moves(r, c))
         elif piece == 'B' or piece == 'b':
+            moves.extend(self.diagonal_moves(r, c))
             moves.extend(self.bishop_moves(r, c))
         elif piece == 'N' or piece == 'n':
             moves.extend(self.knight_moves(r, c))
@@ -238,33 +239,21 @@ class ChessAI:
         return moves
 
     def bishop_moves(self, r: int, c: int):
-        moves = set()
+        moves = list()
         origin = Position(r, c)
-        if ChessAI.is_valid(r - 1, c - 1):
-            if self.is_nothing(chr(self.board[r - 1][c - 1])):
-                moves.add(Move(origin, Position(r - 1, c - 1)))
         if ChessAI.is_valid(r - 1, c):
             if self.is_nothing(chr(self.board[r - 1][c])):
-                moves.add(Move(origin, Position(r - 1, c)))
-        if ChessAI.is_valid(r - 1, c + 1):
-            if self.is_nothing(chr(self.board[r - 1][c + 1])):
-                moves.add(Move(origin, Position(r - 1, c + 1)))
-        if ChessAI.is_valid(r, c - 1):
-            if self.is_nothing(chr(self.board[r][c - 1])):
-                moves.add(Move(origin, Position(r, c - 1)))
-        if ChessAI.is_valid(r, c + 1):
-            if self.is_nothing(chr(self.board[r][c + 1])):
-                moves.add(Move(origin, Position(r, c + 1)))
-        if ChessAI.is_valid(r + 1, c - 1):
-            if self.is_nothing(chr(self.board[r + 1][c - 1])):
-                moves.add(Move(origin, Position(r + 1, c - 1)))
+                moves.append(Move(origin, Position(r - 1, c)))
         if ChessAI.is_valid(r + 1, c):
             if self.is_nothing(chr(self.board[r + 1][c])):
-                moves.add(Move(origin, Position(r + 1, c)))
-        if ChessAI.is_valid(r + 1, c + 1):
-            if self.is_nothing(chr(self.board[r + 1][c + 1])):
-                moves.add(Move(origin, Position(r + 1, c + 1)))
-        return list(moves | set(self.diagonal_moves(r, c)))
+                moves.append(Move(origin, Position(r + 1, c)))
+        if ChessAI.is_valid(r, c - 1):
+            if self.is_nothing(chr(self.board[r][c - 1])):
+                moves.append(Move(origin, Position(r, c - 1)))
+        if ChessAI.is_valid(r, c + 1):
+            if self.is_nothing(chr(self.board[r][c + 1])):
+                moves.append(Move(origin, Position(r, c + 1)))
+        return moves
 
     def knight_moves(self, r: int, c: int):
         moves = list()
