@@ -88,9 +88,10 @@ class ChessAI:
         white_score, black_score = 0, 0
         for row in self.board:
             for piece in row:
-                if chr(piece) in ChessAI.white_pieces:
+                piece = chr(piece)
+                if piece in ChessAI.white_pieces:
                     white_score += ChessAI.piece_values[piece]
-                elif chr(piece) in ChessAI.black_pieces:
+                elif piece in ChessAI.black_pieces:
                     black_score += ChessAI.piece_values[piece]
         return white_score - black_score if self.playing == 'W' else black_score - white_score
 
