@@ -442,7 +442,7 @@ class ChessAI:
             if temp > alpha:
                 best = move
                 alpha = temp
-        self.move(move)
+        self.move(best)
         return str(best)
 
     def alphabeta(self, depth: int, duration: int, alpha: int, beta: int):
