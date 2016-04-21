@@ -46,6 +46,9 @@ class ChessAI:
                       bytearray(b'PPPPP'),
                       bytearray(b'RNBQK')]
 
+    def __str__(self):
+        return '{} {}\n{}\n'.format(self.turn, self.playing, '\n'.join(map(bytearray.decode, self.board)))
+
     def reset(self):
         self.turn = 1
         self.playing = 'W'

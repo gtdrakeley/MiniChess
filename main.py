@@ -4,8 +4,8 @@ import chess
 import zeromq
 
 
-main_int_zeromq = 54361 # CHANGE THIS - OPTIONAL
-main_str_name = 'gtdminichess' # CHANGE THIS - REQUIRED
+main_int_zeromq = 54361  # CHANGE THIS - OPTIONAL
+main_str_name = 'gtdminichess'  # CHANGE THIS - REQUIRED
 
 if __name__ == '__main__':
     assert main_int_zeromq > 1024
@@ -18,14 +18,19 @@ if __name__ == '__main__':
     random.seed()
 
     # '''
+    from time import sleep
     from chessai import ChessAI
     ai = ChessAI()
     while ai.winner() == '?':
         # ai.move_random()
-        ai.move_negamax(3, 0)
+        print('Eval: {}'.format(ai.eval()))
+        print('Board: {}'.format(ai))
+        print('Move: {}'.format(ai.move_negamax(3, 0)))
         if ai.winner() != '?':
             break
-        ai.move_alphabeta(5, 0)
+        print('Eval: {}'.format(ai.eval()))
+        print('Board: {}'.format(ai))
+        print('Move: {}'.format(ai.move_alphabeta(4, 0)))
         # ai.move_greedy()
     print(ai.winner())
     # '''
