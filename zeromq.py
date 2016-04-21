@@ -80,27 +80,31 @@ def start(main_int_zeromq, main_str_name):
             # CHANGES - this is a more Pythonic way of calling join
             # json_out['strOut'] = ''.join(str_out)
             # str_out = ai.framework_moves()
-            str_out = ai.framework_moves()
+            str_out = ai.fw_moves()
             json_out['intOut'] = len(str_out)
             json_out['strOut'] = ''.join(str_out)
 
         elif json_in['strFunction'] == 'chess_movesShuffled':
-            str_out = chess.moves_shuffled()
-
-            json_out['intOut'] = len(str_out)
+            # str_out = chess.moves_shuffled()
+            # json_out['intOut'] = len(str_out)
             # CHANGES - this is a more Pythonic way of calling join
+            # json_out['strOut'] = ''.join(str_out)
+            str_out = ai.fw_moves_shuffled()
+            json_out['intOut'] = len(str_out)
             json_out['strOut'] = ''.join(str_out)
 
         elif json_in['strFunction'] == 'chess_movesEvaluated':
-            str_out = chess.moves_evaluated()
-
-            json_out['intOut'] = len(str_out)
+            # str_out = chess.moves_evaluated()
+            # json_out['intOut'] = len(str_out)
             # CHANGES - this is a more Pythonic way of calling join
+            # json_out['strOut'] = ''.join(str_out)
+            str_out = ai.fw_moves_evaluated()
+            json_out['intOut'] = len(str_out)
             json_out['strOut'] = ''.join(str_out)
 
         elif json_in['strFunction'] == 'chess_move':
             # chess.move(json_in['strIn'])
-            ai.framework_move(json_in['strIn'])
+            ai.fw_move(json_in['strIn'])
 
         elif json_in['strFunction'] == 'chess_moveRandom':
             # json_out['strOut'] = chess.move_random()

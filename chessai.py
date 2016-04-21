@@ -124,7 +124,7 @@ class ChessAI:
                     black_score += ChessAI.piece_values[piece]
         return white_score - black_score if self.playing == 'W' else black_score - white_score
 
-    def framework_moves(self):
+    def fw_moves(self):
         return list(map(str, self.moves()))
         # moves_str = list()
         # calpha = {0: 'a',
@@ -332,7 +332,8 @@ class ChessAI:
                     moves.append(Move(origin, Position(r + 1, c + 1)))
         return moves
 
-    def framework_move(self, move_str: str):
+    def fw_move(self, move_str: str):
+        print(move_str.encode())
         cnum = {'a': 0,
                 'b': 1,
                 'c': 2,
@@ -342,6 +343,10 @@ class ChessAI:
         start, end = list(start), list(end)
         move = Move(Position(6 - int(start[1]), cnum[start[0]]), Position(6 - int(end[1]), cnum[end[0]]))
         self.move(move)
+    
+    def fw_moves_shuffled(self):
+        moves = self.moves_shuffled()
+        return list(map(str, moves))
 
     def moves_shuffled(self):
         moves = self.moves()
@@ -380,8 +385,12 @@ class ChessAI:
         self.move(move)
         return str(move)
 
+    def fw_moves_evaluated(self):
+        moves = self.moves_evaluated()
+        return list(map(str, moves))
+
     def moves_evaluated(self):
-        moves = self.moves()
+        moves = self.moves_shuffled()
         evals = list()
         for move in moves:
             self.move(move)
