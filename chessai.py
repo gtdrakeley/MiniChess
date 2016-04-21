@@ -125,7 +125,7 @@ class ChessAI:
         return white_score - black_score if self.playing == 'W' else black_score - white_score
 
     def framework_moves(self):
-        return map(str, self.moves())
+        return list(map(str, self.moves()))
         # moves_str = list()
         # calpha = {0: 'a',
         #          1: 'b',
@@ -350,7 +350,7 @@ class ChessAI:
 
     def move(self, move: Move):
         self.history.append(BoardHistory(move,
-                                         self.board[move.start.row][move.start.colummn],
+                                         self.board[move.start.row][move.start.column],
                                          self.board[move.end.row][move.end.column]))
         if self.playing == 'W':
             self.playing = 'B'
@@ -368,11 +368,11 @@ class ChessAI:
         if self.history:
             prev = self.history.pop()
             if self.playing == 'W':
-                self.playing == 'B'
+                self.playing = 'B'
                 self.turn -= 1
             else:
                 self.playing = 'W'
-            self.board[prev.move.start.row][prev.move.start.colum] = prev.start_piece
+            self.board[prev.move.start.row][prev.move.start.column] = prev.start_piece
             self.board[prev.move.end.row][prev.move.end.column] = prev.end_piece
 
     def move_random(self):

@@ -115,7 +115,7 @@ def start(main_int_zeromq, main_str_name):
             json_out['strOut'] = chess.move_alphabeta(json_in['intDepth'], json_in['intDuration'])
 
         elif json_in['strFunction'] == 'chess_undo':
-            chess.undo()
+            ai.undo()
 
         socket_handle.send(json.dumps(json_out).encode())
 
