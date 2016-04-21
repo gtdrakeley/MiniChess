@@ -1,8 +1,29 @@
-# import random
+import random
 from collections import namedtuple
 
 Position = namedtuple('Position', ['row', 'column'])
-Move = namedtuple('Move', ['start', 'end'])
+BoardHistory = namedtuple('BoardHistory', ['move', 'start_piece', 'end_piece'])
+
+
+class Move:
+    cta = {0: 'a',
+           1: 'b',
+           2: 'c',
+           3: 'd',
+           4: 'e'}
+
+    def __init__(self, start: Position, end: Position):
+        self.start = start
+        self.end = end
+
+    def __str__(self):
+        return '{}{}-{}{}\n'.format(Move.cta[self.start.column], 6 - self.start.row,
+                                    Move.cta[self.end.column], 6 - self.end.row)
+
+
+# Move = namedtuple('Move', ['start', 'end'])
+# BoardHistory = namedtuple('BoardHistory', ['move', 'start_piece', 'end_piece'])
+
 
 class ChessAI:
     white_pieces = 'KQBNRP'
@@ -17,6 +38,7 @@ class ChessAI:
     def __init__(self):
         self.turn = 1
         self.playing = 'W'
+        self.history = list()
         self.board = [bytearray(b'kqbnr'),
                       bytearray(b'ppppp'),
                       bytearray(b'.....'),
@@ -27,6 +49,7 @@ class ChessAI:
     def reset(self):
         self.turn = 1
         self.playing = 'W'
+        self.history = list()
         self.board = [bytearray(b'kqbnr'),
                       bytearray(b'ppppp'),
                       bytearray(b'.....'),
@@ -102,17 +125,17 @@ class ChessAI:
         return white_score - black_score if self.playing == 'W' else black_score - white_score
 
     def framework_moves(self):
-        moves = self.moves()
-        moves_str = list()
-        calpha = {0: 'a',
-                  1: 'b',
-                  2: 'c',
-                  3: 'd',
-                  4: 'e'}
-        for move in moves:
-            moves_str.append('{}{}-{}{}\n'.format(calpha[move.start.column], 6 - move.start.row,
-                                                   calpha[move.end.column], 6 - move.end.row))
-        return moves_str
+        return map(str, self.moves())
+        # moves_str = list()
+        # calpha = {0: 'a',
+        #          1: 'b',
+        #          2: 'c',
+        #          3: 'd',
+        #          4: 'e'}
+        # for move in moves:
+        #    moves_str.append('{}{}-{}{}\n'.format(calpha[move.start.column], 6 - move.start.row,
+        #                                           calpha[move.end.column], 6 - move.end.row))
+        # return moves_str
 
     def moves(self):
         moves = list()
@@ -320,7 +343,15 @@ class ChessAI:
         move = Move(Position(6 - int(start[1]), cnum[start[0]]), Position(6 - int(end[1]), cnum[end[0]]))
         self.move(move)
 
+    def moves_shuffled(self):
+        moves = self.moves()
+        random.shuffle(moves)
+        return moves
+
     def move(self, move: Move):
+        self.history.append(BoardHistory(move,
+                                         self.board[move.start.row][move.start.colummn],
+                                         self.board[move.end.row][move.end.column]))
         if self.playing == 'W':
             self.playing = 'B'
         else:
@@ -332,3 +363,21 @@ class ChessAI:
             self.board[move.end.row][move.end.column] = ord('Q')
         elif move.end.row == 5 and self.board[move.end.row][move.end.column] == ord('p'):
             self.board[move.end.row][move.end.column] = ord('q')
+
+    def undo(self):
+        if self.history:
+            prev = self.history.pop()
+            if self.playing == 'W':
+                self.playing == 'B'
+                self.turn -= 1
+            else:
+                self.playing = 'W'
+            self.board[prev.move.start.row][prev.move.start.colum] = prev.start_piece
+            self.board[prev.move.end.row][prev.move.end.column] = prev.end_piece
+
+    def move_random(self):
+        moves = self.moves_shuffled()
+        move = moves[0]
+        self.move(move)
+        return str(move)
+
