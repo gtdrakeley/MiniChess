@@ -16,7 +16,7 @@ if __name__ == '__main__':
     assert ' ' not in main_str_name
 
     random.seed()
-
+    '''
     from time import sleep
     from chessai import ChessAI
     ai = ChessAI()
@@ -33,7 +33,7 @@ if __name__ == '__main__':
     for row in ai.board:
         print('\t' + row.decode())
     sleep(10)
-
+    '''
 
     # CHANGE - Calling a function from an imported file that is going to use globals located in the 'importer' would
     # require circular imports, so instead we pass them as function parameters
