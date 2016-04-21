@@ -399,7 +399,7 @@ class ChessAI:
         zipped = list(zip(evals, moves))
         zipped.sort(key=lambda e: e[0])
         evals, moves = zip(*tuple(zipped))
-        return moves
+        return list(moves)
 
     def move_greedy(self):
         move = self.moves_evaluated()[0]
