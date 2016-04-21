@@ -410,7 +410,6 @@ class ChessAI:
         best = None
         score = -31001
         temp = 0
-
         for move in self.moves_shuffled():
             self.move(move)
             temp = -self.negamax(depth - 1, duration)
@@ -431,3 +430,30 @@ class ChessAI:
             self.undo()
         return score
 
+    def move_alphabeta(self, depth: int, duration: int):
+        best = None
+        alpha = -31001
+        beta = 31001
+        temp = 0
+        for move in self.moves_evaluated():
+            self.move(move)
+            temp = -self.alphabeta(depth - 1, duration, -beta, -alpha)
+            self.undo()
+            if temp > alpha:
+                best = move
+                alpha = temp
+        self.move(move)
+        return str(best)
+
+    def alphabeta(self, depth: int, duration: int, alpha: int, beta: int):
+        if depth == 0 or self.winner() != '?':
+            return self.eval()
+        score = -31001
+        for move in self.moves_evaluated():
+            self.move(move)
+            score = max(score, -self.alphabeta(depth - 1, duration, -beta, -alpha))
+            self.undo()
+            alpha = max(alpha, score)
+            if alpha >= beta:
+                break
+        return score
