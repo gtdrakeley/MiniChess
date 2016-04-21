@@ -411,7 +411,7 @@ class ChessAI:
         score = -31001
         temp = 0
 
-        for move in self.moves():
+        for move in self.moves_shuffled():
             self.move(move)
             temp = -self.negamax(depth - 1, duration)
             self.undo()
@@ -422,10 +422,10 @@ class ChessAI:
         return str(best)
 
     def negamax(self, depth: int, duration: int):
-        if depth == 0 or self.winner != '?':
+        if depth == 0 or self.winner() != '?':
             return self.eval()
         score = -31001
-        for move in self.moves():
+        for move in self.moves_shuffled():
             self.move(move)
             score = max(score, -self.negamax(depth - 1, duration))
             self.undo()
