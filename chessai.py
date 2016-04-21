@@ -406,3 +406,28 @@ class ChessAI:
         self.move(move)
         return str(move)
 
+    def move_negamax(self, depth: int, duration: int):
+        best = None
+        score = -31001
+        temp = 0
+
+        for move in self.moves():
+            self.move(move)
+            temp = -self.negamax(depth - 1, duration)
+            self.undo()
+            if temp > score:
+                best = move
+                score = temp
+        self.move(best)
+        return str(best)
+
+    def negamax(self, depth: int, duration: int):
+        if depth == 0 or self.winner != '?':
+            return self.eval()
+        score = -31001
+        for move in self.moves():
+            self.move(move)
+            score = max(score, -self.negamax(depth - 1, duration))
+            self.undo()
+        return score
+

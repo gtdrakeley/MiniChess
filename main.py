@@ -16,22 +16,17 @@ if __name__ == '__main__':
     assert ' ' not in main_str_name
 
     random.seed()
+
     '''
     from time import sleep
     from chessai import ChessAI
     ai = ChessAI()
     while ai.winner() == '?':
-        print('{} playing turn #{}'.format(ai.playing, ai.turn))
-        for row in ai.board:
-            print('\t' + row.decode())
-        move = ai.moves_shuffled()[0]
-        print('Taking move {}'.format(move))
-        print()
-        ai.move(move)
-    print('{} wins!'.format(ai.winner()))
-    print('Final board state:')
-    for row in ai.board:
-        print('\t' + row.decode())
+        ai.move_random()
+        if ai.winner() != '?':
+            break
+        ai.move_greedy()
+    print(ai.winner())
     sleep(10)
     '''
 

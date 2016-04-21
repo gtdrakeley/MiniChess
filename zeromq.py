@@ -115,7 +115,8 @@ def start(main_int_zeromq, main_str_name):
             json_out['strOut'] = ai.move_greedy()
 
         elif json_in['strFunction'] == 'chess_moveNegamax':
-            json_out['strOut'] = chess.move_negamax(json_in['intDepth'], json_in['intDuration'])
+            # json_out['strOut'] = chess.move_negamax(json_in['intDepth'], json_in['intDuration'])
+            json_out['strOut'] = ai.move_negamax(json_in['intDepth'], json_in['intDuration'])
 
         elif json_in['strFunction'] == 'chess_moveAlphabeta':
             json_out['strOut'] = chess.move_alphabeta(json_in['intDepth'], json_in['intDuration'])
