@@ -376,8 +376,24 @@ class ChessAI:
             self.board[prev.move.end.row][prev.move.end.column] = prev.end_piece
 
     def move_random(self):
-        moves = self.moves_shuffled()
-        move = moves[0]
+        move = self.moves_shuffled()[0]
+        self.move(move)
+        return str(move)
+
+    def moves_evaluated(self):
+        moves = self.moves()
+        evals = list()
+        for move in moves:
+            self.move(move)
+            evals.append(self.eval())
+            self.undo()
+        zipped = list(zip(evals, moves))
+        zipped.sort(key=lambda e: e[0])
+        evals, moves = zip(*tuple(zipped))
+        return moves
+
+    def move_greedy(self):
+        move = self.moves_evaluated()[0]
         self.move(move)
         return str(move)
 
