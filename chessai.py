@@ -41,7 +41,7 @@ class Move:
         return Move(Position.fromstr(split[0]), Position.fromstr(split[1]))
 
     def __str__(self):
-        return '{}-{}'.format(self.start, self.end)
+        return '{}-{}\n'.format(self.start, self.end)
 
 
 # Move = namedtuple('Move', ['start', 'end'])
