@@ -1,24 +1,47 @@
 import random
 from collections import namedtuple
 
-Position = namedtuple('Position', ['row', 'column'])
+# Position = namedtuple('Position', ['row', 'column'])
 BoardHistory = namedtuple('BoardHistory', ['move', 'start_piece', 'end_piece'])
 
 
-class Move:
+class Position:
+    atc = {'a': 0,
+           'b': 1,
+           'c': 2,
+           'd': 3,
+           'e': 4}
     cta = {0: 'a',
            1: 'b',
            2: 'c',
            3: 'd',
            4: 'e'}
 
+    def __init__(self, row: int, column: int):
+        self.row = row
+        self.column = column
+
+    @staticmethod
+    def fromstr(string: str):
+        l = list(string)
+        return Position(6 - int(l[1]), Position.atc[l[0]])
+
+    def __str__(self):
+        return '{}{}'.format(Position.cta[self.column], 6 - self.row)
+
+
+class Move:
     def __init__(self, start: Position, end: Position):
         self.start = start
         self.end = end
 
+    @staticmethod
+    def fromstr(string: str):
+        split = string.strip().split('-')
+        return Move(Position.fromstr(split[0]), Position.fromstr(split[1]))
+
     def __str__(self):
-        return '{}{}-{}{}\n'.format(Move.cta[self.start.column], 6 - self.start.row,
-                                    Move.cta[self.end.column], 6 - self.end.row)
+        return '{}-{}'.format(self.start, self.end)
 
 
 # Move = namedtuple('Move', ['start', 'end'])
@@ -335,17 +358,8 @@ class ChessAI:
                     moves.append(Move(origin, Position(r + 1, c + 1)))
         return moves
 
-    def fw_move(self, move_str: str):
-        print(move_str.encode())
-        cnum = {'a': 0,
-                'b': 1,
-                'c': 2,
-                'd': 3,
-                'e': 4}
-        start, end = move_str.strip().split('-')
-        start, end = list(start), list(end)
-        move = Move(Position(6 - int(start[1]), cnum[start[0]]), Position(6 - int(end[1]), cnum[end[0]]))
-        self.move(move)
+    def fw_move(self, string: str):
+        self.move(Move.fromstr(string[0:5]))
     
     def fw_moves_shuffled(self):
         moves = self.moves_shuffled()
