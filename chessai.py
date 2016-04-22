@@ -57,6 +57,11 @@ class ChessAI:
                     'n': 3000, 'N': 3000,
                     'r': 5000, 'R': 5000,
                     'p': 1000, 'P': 1000}
+    max_score = (piece_values['k'] +
+                 piece_values['q'] * 6 +
+                 piece_values['b'] +
+                 piece_values['n'] +
+                 piece_values['r'] + 1)
 
     def __init__(self):
         self.turn = 1
@@ -425,11 +430,7 @@ class ChessAI:
 
     def move_negamax(self, depth: int, duration: int):
         best = None
-        score = -(ChessAI.piece_values['k'] +
-                  ChessAI.piece_values['q'] * 6 +
-                  ChessAI.piece_values['b'] +
-                  ChessAI.piece_values['n'] +
-                  ChessAI.piece_values['r'] + 1)
+        score = -ChessAI.max_score
         temp = 0
         for move in self.moves_shuffled():
             self.move(move)
@@ -444,11 +445,7 @@ class ChessAI:
     def negamax(self, depth: int, duration: int):
         if depth == 0 or self.winner() != '?':
             return self.eval()
-        score = -(ChessAI.piece_values['k'] +
-                  ChessAI.piece_values['q'] * 6 +
-                  ChessAI.piece_values['b'] +
-                  ChessAI.piece_values['n'] +
-                  ChessAI.piece_values['r'] + 1)
+        score = -ChessAI.max_score
         for move in self.moves_shuffled():
             self.move(move)
             score = max(score, -self.negamax(depth - 1, duration))
@@ -457,16 +454,8 @@ class ChessAI:
 
     def move_alphabeta(self, depth: int, duration: int):
         best = None
-        alpha = -(ChessAI.piece_values['k'] +
-                  ChessAI.piece_values['q'] * 6 +
-                  ChessAI.piece_values['b'] +
-                  ChessAI.piece_values['n'] +
-                  ChessAI.piece_values['r'] + 1)
-        beta = (ChessAI.piece_values['k'] +
-                ChessAI.piece_values['q'] * 6 +
-                ChessAI.piece_values['b'] +
-                ChessAI.piece_values['n'] +
-                ChessAI.piece_values['r'] + 1)
+        alpha = -ChessAI.max_score
+        beta = ChessAI.max_score
         temp = 0
         for move in self.moves_evaluated():
             self.move(move)
@@ -481,11 +470,7 @@ class ChessAI:
     def alphabeta(self, depth: int, duration: int, alpha: int, beta: int):
         if depth == 0 or self.winner() != '?':
             return self.eval()
-        score = -(ChessAI.piece_values['k'] +
-                  ChessAI.piece_values['q'] * 6 +
-                  ChessAI.piece_values['b'] +
-                  ChessAI.piece_values['n'] +
-                  ChessAI.piece_values['r'] + 1)
+        score = -ChessAI.max_score
         for move in self.moves_evaluated():
             self.move(move)
             score = max(score, -self.alphabeta(depth - 1, duration, -beta, -alpha))
