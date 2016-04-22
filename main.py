@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
     random.seed()
 
-    # '''
+    '''
     from time import sleep
     from chessai import ChessAI
     ai = ChessAI()
