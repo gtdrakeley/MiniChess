@@ -37,5 +37,5 @@ if __name__ == '__main__':
 
     # CHANGE - Calling a function from an imported file that is going to use globals located in the 'importer' would
     # require circular imports, so instead we pass them as function parameters
-    # zeromq.start(main_int_zeromq, main_str_name)
+    zeromq.start(main_int_zeromq, main_str_name)
 
