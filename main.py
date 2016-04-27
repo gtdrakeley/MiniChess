@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
     random.seed()
 
-    '''
+    # '''
     from time import sleep
     from chessai import ChessAI
     ai = ChessAI()
@@ -30,12 +30,12 @@ if __name__ == '__main__':
             break
         print('Eval: {}'.format(ai.eval()))
         print('Board: {}'.format(ai))
-        print('Move: {}'.format(ai.move_alphabeta(4, 0)))
+        print('Move: {}'.format(ai.move_alphabeta(5, 0)))
         # ai.move_greedy()
     print(ai.winner())
     # '''
 
     # CHANGE - Calling a function from an imported file that is going to use globals located in the 'importer' would
     # require circular imports, so instead we pass them as function parameters
-    zeromq.start(main_int_zeromq, main_str_name)
+    # zeromq.start(main_int_zeromq, main_str_name)
 

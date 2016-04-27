@@ -431,7 +431,7 @@ class ChessAI:
     def move_negamax(self, depth: int, duration: int):
         best = None
         score = -ChessAI.max_score
-        temp = 0
+        # temp = 0
         for move in self.moves_shuffled():
             self.move(move)
             temp = -self.negamax(depth - 1, duration)
@@ -456,7 +456,7 @@ class ChessAI:
         best = None
         alpha = -ChessAI.max_score
         beta = ChessAI.max_score
-        temp = 0
+        # temp = 0
         for move in self.moves_evaluated():
             self.move(move)
             temp = -self.alphabeta(depth - 1, duration, -beta, -alpha)
