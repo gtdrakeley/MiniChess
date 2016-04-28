@@ -19,8 +19,8 @@ if __name__ == '__main__':
 
     # '''
     from time import sleep
-    from chessai import ChessAI
-    ai = ChessAI()
+    import chessai
+    ai = chessai.ChessAI()
     while ai.winner() == '?':
         # ai.move_random()
         print('Eval: {}'.format(ai.eval()))
@@ -29,8 +29,10 @@ if __name__ == '__main__':
         if ai.winner() != '?':
             break
         print('Eval: {}'.format(ai.eval()))
+        print('Table Hits: {}'.format(chessai.table_hits))
+        chessai.table_hits = 0
         print('Board: {}'.format(ai))
-        print('Move: {}'.format(ai.move_alphabeta(5, 0)))
+        print('Move: {}'.format(ai.move_alphabeta(6, 0)))
         # ai.move_greedy()
     print(ai.winner())
     # '''

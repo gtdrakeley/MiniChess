@@ -1,8 +1,10 @@
 import random
+import ttable
 from collections import namedtuple
 
 # Position = namedtuple('Position', ['row', 'column'])
 BoardHistory = namedtuple('BoardHistory', ['move', 'start_piece', 'end_piece'])
+table_hits = 0
 
 
 class Position:
@@ -73,6 +75,8 @@ class ChessAI:
                       bytearray(b'.....'),
                       bytearray(b'PPPPP'),
                       bytearray(b'RNBQK')]
+        self.ttable = ttable.TranspositionTable(0)
+        self.ttable.hash_board(self.playing, self.board)
 
     def __str__(self):
         return '{} {}\n{}\n'.format(self.turn, self.playing, '\n'.join(map(bytearray.decode, self.board)))
@@ -87,6 +91,8 @@ class ChessAI:
                       bytearray(b'.....'),
                       bytearray(b'PPPPP'),
                       bytearray(b'RNBQK')]
+        self.ttable = ttable.TranspositionTable(256)
+        self.ttable.hash_board(self.playing, self.board)
 
     def board_get(self):
         return '{} {}\n{}\n'.format(self.turn, self.playing, '\n'.join(map(bytearray.decode, self.board)))
@@ -96,6 +102,7 @@ class ChessAI:
         turn, playing = turn_state.split()
         self.turn, self.playing = int(turn), playing
         self.board = [bytearray(row.encode()) for row in board_state if len(row) > 0]
+        self.ttable.hash_board(self.playing, self.board)
 
     def winner(self):
         board_concat = bytearray.join(bytearray(b''), self.board).decode()
@@ -376,9 +383,10 @@ class ChessAI:
         return moves
 
     def move(self, move: Move):
-        self.history.append(BoardHistory(move,
-                                         self.board[move.start.row][move.start.column],
-                                         self.board[move.end.row][move.end.column]))
+        hist = BoardHistory(move,
+                            self.board[move.start.row][move.start.column],
+                            self.board[move.end.row][move.end.column])
+        self.history.append(hist)
         if self.playing == 'W':
             self.playing = 'B'
         else:
@@ -388,8 +396,22 @@ class ChessAI:
         self.board[move.start.row][move.start.column] = ord('.')
         if move.end.row == 0 and self.board[move.end.row][move.end.column] == ord('P'):
             self.board[move.end.row][move.end.column] = ord('Q')
+            # '''
+            self.ttable.update([hist.move.start, hist.move.end, hist.move.end],
+                               [chr(hist.start_piece), chr(hist.end_piece), 'Q'])
+            # '''
         elif move.end.row == 5 and self.board[move.end.row][move.end.column] == ord('p'):
             self.board[move.end.row][move.end.column] = ord('q')
+            # '''
+            self.ttable.update([hist.move.start, hist.move.end, hist.move.end],
+                               [chr(hist.start_piece), chr(hist.end_piece), 'q'])
+            # '''
+        else:
+            # '''
+            self.ttable.update([hist.move.start, hist.move.end, hist.move.end],
+                               [chr(hist.start_piece), chr(hist.end_piece), chr(hist.start_piece)])
+            # '''
+        # self.ttable.hash_board(self.playing, self.board)
 
     def undo(self):
         if self.history:
@@ -401,6 +423,8 @@ class ChessAI:
                 self.playing = 'W'
             self.board[prev.move.start.row][prev.move.start.column] = prev.start_piece
             self.board[prev.move.end.row][prev.move.end.column] = prev.end_piece
+            self.ttable.undo()
+            # self.ttable.hash_board(self.playing, self.board)
 
     def move_random(self):
         move = self.moves_shuffled()[0]
@@ -468,6 +492,20 @@ class ChessAI:
         return str(best)
 
     def alphabeta(self, depth: int, duration: int, alpha: int, beta: int):
+        global table_hits
+        old_alpha = alpha
+        entry = self.ttable.lookup()
+        if entry:
+            table_hits += 1
+            if entry.depth >= depth:
+                if entry.flag == ttable.EXACT:
+                    return entry.score
+                elif entry.flag == ttable.LOWER_BOUND:
+                    alpha = max(alpha, entry.score)
+                elif entry.flag == ttable.UPPER_BOUND:
+                    beta = min(beta, entry.score)
+                if alpha >= beta:
+                    return entry.score
         if depth == 0 or self.winner() != '?':
             return self.eval()
         score = -ChessAI.max_score
@@ -478,4 +516,11 @@ class ChessAI:
             alpha = max(alpha, score)
             if alpha >= beta:
                 break
+        if score <= old_alpha:
+            self.ttable.store(score, None, depth, ttable.UPPER_BOUND)
+        elif score >= beta:
+            self.ttable.store(score, None, depth, ttable.LOWER_BOUND)
+        else:
+            self.ttable.store(score, None, depth, ttable.EXACT)
         return score
+
