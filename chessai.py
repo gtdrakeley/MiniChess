@@ -477,15 +477,17 @@ class ChessAI:
                 while True:
                     for move in self.moves_evaluated():
                         self.move(move)
-                        temp = -self.alphabeta(iter_depth, self.move_duration, -beta, -alpha)
+                        temp = -self.alphabeta(iter_depth - 1, self.move_duration, -beta, -alpha)
                         self.undo()
                         if temp > alpha:
                             best = move
                             alpha = temp
                     iter_depth += 1
-            except TimeoutError:
+            except TimeoutError as e:
                 print(iter_depth)
                 print(self.move_duration)
+                for _ in range(iter_depth - e.args[0]):
+                    self.undo()
                 self.move_duration = -1
                 self.start_time = 0
         else:
@@ -508,7 +510,7 @@ class ChessAI:
         self.recur_calls += 1
         if duration > 0 and self.recur_calls > 20000:
             if milliseconds() - self.start_time >= duration:
-                raise TimeoutError()
+                raise TimeoutError(depth)
             else:
                 self.recur_calls = 0
         if depth == 0 or self.winner() != '?':
