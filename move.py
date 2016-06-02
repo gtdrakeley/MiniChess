@@ -6,13 +6,13 @@ class Move:
     column_to_char = {v: k for k, v in char_to_column.items()}
 
     def __init__(self, src_row: int, src_column: int, dest_row: int, dest_column: int) -> None:
-        if 0 > src_row > 5:
+        if src_row < 0 or src_row > 5:
             raise ValueError('Source row is out of bounds')
-        elif 0 > src_column > 4:
+        elif src_column < 0 or src_column > 4:
             raise ValueError('Source column is out of bounds')
-        elif 0 > dest_row > 5:
+        elif dest_row < 0 or dest_row > 5:
             raise ValueError('Destination row is out of bounds')
-        elif 0 > dest_column > 4:
+        elif dest_column < 0 or dest_column > 4:
             raise ValueError('Destination column is out of bounds')
         self.data = src_row | src_column << 3 | dest_row << 6 | dest_column << 9
 
