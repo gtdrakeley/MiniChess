@@ -484,7 +484,7 @@ class ChessAI:
                             alpha = temp
                     iter_depth += 1
             except TimeoutError as e:
-                print(iter_depth)
+                print(iter_depth-1)
                 print(self.move_duration)
                 for _ in range(iter_depth - e.args[0]):
                     self.undo()
@@ -508,10 +508,11 @@ class ChessAI:
 
     def alphabeta(self, depth: int, duration: int, alpha: int, beta: int):
         self.recur_calls += 1
-        if duration > 0 and self.recur_calls > 20000:
+        if duration > 0 and not self.recur_calls > 20000:
             if milliseconds() - self.start_time >= duration:
                 raise TimeoutError(depth)
             else:
+                pass
                 self.recur_calls = 0
         if depth == 0 or self.winner() != '?':
             return self.eval()
