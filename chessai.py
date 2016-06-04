@@ -57,12 +57,15 @@ class Move:
 class ChessAI:
     white_pieces = 'KQBNRP'
     black_pieces = 'kqbnrp'
-    piece_values = {'k': 200000, 'K': 200000,
-                    'q': 20000, 'Q': 20000,
-                    'b': 5000, 'B': 5000,
-                    'n': 3000, 'N': 3000,
-                    'r': 5000, 'R': 5000,
-                    'p': 1000, 'P': 1000}
+    piece_values = {'q': 2000, 'Q': 2000,
+                    'b': 500, 'B': 500,
+                    'n': 300, 'N': 300,
+                    'r': 500, 'R': 500,
+                    'p': 100, 'P': 100}
+    piece_values['k'] = piece_values['K'] = (piece_values['q'] * 6 +
+                                             piece_values['b'] +
+                                             piece_values['n'] +
+                                             piece_values['r'] + 1)
     max_score = (piece_values['k'] +
                  piece_values['q'] * 6 +
                  piece_values['b'] +
@@ -471,6 +474,7 @@ class ChessAI:
                     self.move_duration = (duration - 1500) / (41 - self.turn)
                     self.start_time = milliseconds()
                 best = None
+                temp_best = None
                 alpha = -ChessAI.max_score
                 beta = ChessAI.max_score
                 iter_depth = 2
@@ -480,8 +484,9 @@ class ChessAI:
                         temp = -self.alphabeta(iter_depth - 1, self.move_duration, -beta, -alpha)
                         self.undo()
                         if temp > alpha:
-                            best = move
+                            temp_best = move
                             alpha = temp
+                    best = temp_best
                     iter_depth += 1
             except TimeoutError as e:
                 print(iter_depth-1)
