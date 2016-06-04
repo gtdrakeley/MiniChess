@@ -1,15 +1,17 @@
+from typing import List
+
 class Board:
-    def __init__(self):
-        self.turn = 1
-        self.playing = 'W'
-        self.board = list([list('kqbnr'),
+    def __init__(self) -> None:
+        self.turn = 1  # type: int
+        self.playing = 'W'  # type: str
+        self.board = list([list('kqbnr'),  # type: List[List[str]]
                            list('ppppp'),
                            list('.....'),
                            list('.....'),
                            list('PPPPP'),
                            list('RNBQK')])
 
-    def reset(self):
+    def reset(self) -> None:
         self.__init__()
 
     def get_board(self) -> str:

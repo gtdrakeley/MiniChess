@@ -1,7 +1,7 @@
-import board
+import boardhistory
 
 
-class PieceAnalyzer(board.Board):
+class PieceAnalyzer(boardhistory.BoardHistory):
     white_pieces = 'KQBNRP'
     black_pieces = 'kqbnrp'
 

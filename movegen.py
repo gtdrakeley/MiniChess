@@ -2,13 +2,14 @@ import boardeval
 import panalyze
 import move
 import random
+from typing import List
 
 
 class MoveGenerator(boardeval.BoardEvaluator):
     def __init__(self):
         super().__init__()
 
-    def moves(self) -> list[move.Move]:
+    def moves(self) -> List[move.Move]:
         moves = list()
         for r, row in enumerate(self.board):
             for c, piece in enumerate(row):
@@ -18,7 +19,7 @@ class MoveGenerator(boardeval.BoardEvaluator):
                     moves.extend(self.piece_moves(piece, r, c))
         return moves
 
-    def moves_shuffled(self) -> list[move.Move]:
+    def moves_shuffled(self) -> List[move.Move]:
         moves = self.moves()
         random.shuffle(moves)
         return moves

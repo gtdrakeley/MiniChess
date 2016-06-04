@@ -1,5 +1,6 @@
 import boardeval
 import move
+from typing import List
 
 
 class PieceMoveGenerator(boardeval.BoardEvaluator):
@@ -13,7 +14,7 @@ class PieceMoveGenerator(boardeval.BoardEvaluator):
         else:
             return False
 
-    def piece_moves(self, piece: str, r: int, c: int) -> list[move.Move]:
+    def piece_moves(self, piece: str, r: int, c: int) -> List[move.Move]:
         moves = list()
         if piece == 'K' or piece == 'k':
             moves.extend(self.axis_moves(r, c, 1))
@@ -32,7 +33,7 @@ class PieceMoveGenerator(boardeval.BoardEvaluator):
             moves.extend(self.pawn_moves(r, c))
         return moves
 
-    def axis_moves(self, r: int, c: int, max_dist=5) -> list[move.Move]:
+    def axis_moves(self, r: int, c: int, max_dist=5) -> List[move.Move]:
         moves = list()
         ublocked = dblocked = lblocked = rblocked = False
         for offset in range(1, max_dist+1):
@@ -52,7 +53,7 @@ class PieceMoveGenerator(boardeval.BoardEvaluator):
                 moves.append(move.Move(r, c, r, c+offset))
         return moves
 
-    def diagonal_moves(self, r: int, c: int, max_dist=5) -> list[move.Move]:
+    def diagonal_moves(self, r: int, c: int, max_dist=5) -> List[move.Move]:
         moves = list()
         ulblocked = urblocked = dlblocked = drblocked = False
         for offset in range(1, max_dist+1):
@@ -78,7 +79,7 @@ class PieceMoveGenerator(boardeval.BoardEvaluator):
                 drblocked = True
         return moves
 
-    def bishop_moves(self, r: int, c: int) -> list[move.Move]:
+    def bishop_moves(self, r: int, c: int) -> List[move.Move]:
         moves = list()
         if PieceMoveGenerator.is_valid(r-1, c) and self.is_nothing(self.board[r-1][c]):
             moves.append(move.Move(r, c, r-1, c))
@@ -90,7 +91,7 @@ class PieceMoveGenerator(boardeval.BoardEvaluator):
             moves.append(move.Move(r, c, r, c+1))
         return moves
 
-    def knight_moves(self, r: int, c: int) -> list[move.Move]:
+    def knight_moves(self, r: int, c: int) -> List[move.Move]:
         moves = list()
         if PieceMoveGenerator.is_valid(r-2, c-1) and not self.is_own(self.board[r-2][c-1]):
             moves.append(move.Move(r, c, r-2, c-1))
@@ -110,21 +111,21 @@ class PieceMoveGenerator(boardeval.BoardEvaluator):
             moves.append(move.Move(r, c, r+1, c+2))
         return moves
 
-    def pawn_moves(self, r: int, c: int) -> list[move.Move]:
+    def pawn_moves(self, r: int, c: int) -> List[move.Move]:
         moves = list()
         if self.playing == 'W':
             if PieceMoveGenerator.is_valid(r-1, c) and self.is_nothing(self.board[r-1][c]):
-                moves.append(r, c, r-1, c)
+                moves.append(move.Move(r, c, r-1, c))
             if PieceMoveGenerator.is_valid(r-1, c-1 and self.is_enemy(self.board[r-1][c-1])):
-                moves.append(r, c, r-1, c-1)
+                moves.append(move.Move(r, c, r-1, c-1))
             if PieceMoveGenerator.is_valid(r-1, c+1) and self.is_enemy(self.board[r-1][c+1]):
-                moves.append(r, c, r-1, c+1)
+                moves.append(move.Move(r, c, r-1, c+1))
         else:
             if PieceMoveGenerator.is_valid(r+1, c) and self.is_nothing(self.board[r+1][c]):
-                moves.append(r, c, r+1, c)
+                moves.append(move.Move(r, c, r+1, c))
             if PieceMoveGenerator.is_valid(r+1, c-1) and self.is_nothing(self.board[r+1][c-1]):
-                moves.append(r, c, r+1, c-1)
+                moves.append(move.Move(r, c, r+1, c-1))
             if PieceMoveGenerator.is_valid(r+1, c+1) and self.is_nothing(self.board[r+1][c+1]):
-                moves.append(r, c, r+1, c+1)
+                moves.append(move.Move(r, c, r+1, c+1))
         return moves
 
