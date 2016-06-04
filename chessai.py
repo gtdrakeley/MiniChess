@@ -488,6 +488,8 @@ class ChessAI:
                             alpha = temp
                     best = temp_best
                     iter_depth += 1
+                    if iter_depth > 64:
+                        break
             except TimeoutError as e:
                 print(iter_depth-1)
                 print(self.move_duration)
