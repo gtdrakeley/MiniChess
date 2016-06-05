@@ -5,15 +5,15 @@ from typing import List
 
 
 class BoardHistory(board.Board):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.board_history = list()  # type: List[history.History]
 
-    def move(self, mv: move.Move):
+    def move(self, mv: move.Move) -> None:
         self.board_history.append(history.History(self.board, mv))
         super().move(mv)
 
-    def undo(self):
+    def undo(self) -> None:
         hist = self.board_history.pop()
         self.board[hist.src_row][hist.src_column] = hist.src_piece
         self.board[hist.dest_row][hist.dest_column] = hist.dest_piece

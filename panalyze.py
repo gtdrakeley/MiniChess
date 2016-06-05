@@ -5,7 +5,7 @@ class PieceAnalyzer(boardhistory.BoardHistory):
     white_pieces = 'KQBNRP'
     black_pieces = 'kqbnrp'
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     @staticmethod

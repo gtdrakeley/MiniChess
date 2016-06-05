@@ -4,7 +4,7 @@ from typing import List
 
 
 class PieceMoveGenerator(boardeval.BoardEvaluator):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     @staticmethod

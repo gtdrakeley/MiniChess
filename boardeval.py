@@ -68,13 +68,13 @@ class BoardEvaluator(panalyze.PieceAnalyzer):
 
     def __init__(self) -> None:
         super().__init__()
-        self.white_score = 0  # type: int
+        self.white_score = 0
         self.black_score = 0
         self.eval_history = list()  # type: List[Tuple[int, int]]
         self.evaluate_board()
 
     @property
-    def eval(self):
+    def eval(self) -> int:
         return self.white_score - self.black_score if self.playing == 'W' else self.black_score - self.white_score
 
     def evaluate_board(self) -> None:
@@ -110,7 +110,7 @@ class BoardEvaluator(panalyze.PieceAnalyzer):
             self.black_score += int(BoardEvaluator.piece_values[src_piece] *
                                     BoardEvaluator.position_value_modifiers[src_piece][mv.dest_row][mv.dest_column])
 
-    def undo(self):
+    def undo(self) -> None:
         super().undo()
         self.white_pieces, self.black_score = self.eval_history.pop()
 

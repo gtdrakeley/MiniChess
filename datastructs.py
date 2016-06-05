@@ -8,11 +8,11 @@ class Position:
     cta = {v: k for k, v in atc}
     # cta = {0: 'a', 1: 'b', 2: 'c', 3: 'd', 4: 'e'}
 
-    def __init__(self, row: int, column: int):
+    def __init__(self, row: int, column: int) -> None:
         self.row = row
         self.column = column
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '{}{}'.format(Position.cta[self.column], 6 - self.row)
 
     @staticmethod

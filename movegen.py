@@ -6,7 +6,7 @@ from typing import List
 
 
 class MoveGenerator(boardeval.BoardEvaluator):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     def moves(self) -> List[move.Move]:
@@ -29,7 +29,7 @@ class MoveGenerator(boardeval.BoardEvaluator):
         evals = list()
         for mv in moves:
             self.move(mv)
-            evals.append(self.eval())
+            evals.append(self.eval)
             self.undo()
         zipped = list(zip(evals, moves))
         zipped.sort(key=lambda e: e[0])
