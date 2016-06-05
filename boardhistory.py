@@ -9,8 +9,9 @@ class BoardHistory(board.Board):
         super().__init__()
         self.board_history = list()  # type: List[history.History]
 
-    def save(self, mv: move.Move):
+    def move(self, mv: move.Move):
         self.board_history.append(history.History(self.board, mv))
+        super().move(mv)
 
     def undo(self):
         hist = self.board_history.pop()

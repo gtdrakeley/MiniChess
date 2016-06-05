@@ -1,4 +1,6 @@
+import move
 from typing import List
+
 
 class Board:
     def __init__(self) -> None:
@@ -33,4 +35,19 @@ class Board:
             return '='
         else:
             return '?'
+
+    def move(self, mv: move.Move) -> None:
+        if self.playing == 'W':
+            self.playing = 'B'
+        else:
+            self.playing = 'W'
+            self.turn += 1
+        src_piece = self.board[mv.src_row][mv.src_column]
+        self.board[mv.src_row][mv.src_column] = '.'
+        if src_piece == 'P' and mv.dest_row == 0:
+            self.board[mv.dest_row][mv.dest_column] = 'Q'
+        elif src_piece == 'p' and mv.dest_row == 5:
+            self.board[mv.dest_row][mv.dest_column] = 'q'
+        else:
+            self.board[mv.dest_row][mv.dest_column] = src_piece
 
