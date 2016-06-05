@@ -1,9 +1,9 @@
-import panalyze
-import move
+from panalyze import PieceAnalyzer
+from move import Move
 from typing import List, Tuple
 
 
-class BoardEvaluator(panalyze.PieceAnalyzer):
+class BoardEvaluator(PieceAnalyzer):
     piece_values = {'K': 200000,
                     'Q': 20000,
                     'B': 5000,
@@ -82,18 +82,18 @@ class BoardEvaluator(panalyze.PieceAnalyzer):
         for r, row in enumerate(self.board):
             for c, piece in enumerate(row):
                 piece = chr(piece)
-                if piece in BoardEvaluator.white_pieces:
+                if piece in PieceAnalyzer.white_pieces:
                     self.white_score += int(BoardEvaluator.piece_values[piece] *
                                             BoardEvaluator.position_value_modifiers[piece][r][c])
-                elif piece in BoardEvaluator.black_pieces:
+                elif piece in PieceAnalyzer.black_pieces:
                     self.black_score += int(BoardEvaluator.piece_values[piece] *
                                             BoardEvaluator.position_value_modifiers[piece][5-r][c])
 
-    def move(self, mv: move.Move) -> None:
+    def move(self, mv: Move) -> None:
         self.eval_history.append((self.white_score, self.black_score))
         src_piece = self.board[mv.src_row][mv.src_column]
         dest_piece = self.board[mv.dest_row][mv.dest_column]
-        if src_piece in BoardEvaluator.white_pieces:
+        if src_piece in PieceAnalyzer.white_pieces:
             self.white_score -= int(BoardEvaluator.piece_values[src_piece] *
                                     BoardEvaluator.position_value_modifiers[src_piece][mv.src_row][mv.src_column])
             self.black_score -= int(BoardEvaluator.piece_values[dest_piece] *
@@ -117,4 +117,3 @@ class BoardEvaluator(panalyze.PieceAnalyzer):
     def set_board(self, board_string: str) -> None:
         super().set_board(board_string)
         self.evaluate_board()
-

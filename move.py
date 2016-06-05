@@ -41,4 +41,3 @@ class Move:
     @property
     def dest_column(self) -> int:
         return (self.data & 0xE00) >> 9
-

@@ -1,4 +1,4 @@
-import move
+from move import Move
 from typing import List
 
 
@@ -36,7 +36,7 @@ class Board:
         else:
             return '?'
 
-    def move(self, mv: move.Move) -> None:
+    def move(self, mv: Move) -> None:
         if self.playing == 'W':
             self.playing = 'B'
         else:
@@ -50,4 +50,3 @@ class Board:
             self.board[mv.dest_row][mv.dest_column] = 'q'
         else:
             self.board[mv.dest_row][mv.dest_column] = src_piece
-

@@ -1,7 +1,7 @@
-import boardhistory
+from boardhistory import BoardHistory
 
 
-class PieceAnalyzer(boardhistory.BoardHistory):
+class PieceAnalyzer(BoardHistory):
     white_pieces = 'KQBNRP'
     black_pieces = 'kqbnrp'
 
@@ -27,4 +27,3 @@ class PieceAnalyzer(boardhistory.BoardHistory):
             return True
         else:
             return False
-

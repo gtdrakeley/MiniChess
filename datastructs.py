@@ -33,4 +33,3 @@ class Move:
     def fromstr(string: str):
         split = string.strip().split('-')
         return Move(Position.fromstr(split[0]), Position.fromstr(split[1]))
-
