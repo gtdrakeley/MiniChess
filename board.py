@@ -19,11 +19,15 @@ class Board:
     def get_board(self) -> str:
         return '{} {}\n{}\n'.format(self.turn, self.playing, '\n'.join(map(''.join, self.board)))
 
-    def set_board(self, board_string: str) -> None:
-        turn_state, *board_state = board_string.split('\n')
+    def set_board(self, string: str) -> None:
+        turn_state, *board_state = string.split('\n')
+        print(turn_state)
+        print(board_state)
         turn, playing = turn_state.split()
+        print(turn)
+        print(playing)
         self.turn, self.playing = int(turn), playing
-        self.board = list(map(list, board_state))
+        self.board = list(map(list, filter(None, board_state)))
 
     def winner(self) -> str:
         board = ''.join(map(''.join, self.board))
