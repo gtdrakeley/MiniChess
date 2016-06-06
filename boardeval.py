@@ -106,7 +106,7 @@ class BoardEvaluator(PieceAnalyzer):
             self.black_score -= BoardEvaluator.piece_position_values[src_piece][5-mv.src_row][mv.src_column]
             super().move(mv)
             src_piece = self.board[mv.dest_row][mv.dest_column]
-            self.black_score += BoardEvaluator.piece_position_values[src_piece][mv.dest_row][mv.dest_column]
+            self.black_score += BoardEvaluator.piece_position_values[src_piece][5-mv.dest_row][mv.dest_column]
 
     def undo(self) -> None:
         super().undo()
