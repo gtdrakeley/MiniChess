@@ -86,7 +86,6 @@ class BoardEvaluator(PieceAnalyzer):
         self.white_score, self.black_score = 0, 0
         for r, row in enumerate(self.board):
             for c, piece in enumerate(row):
-                piece = chr(piece)
                 if piece in PieceAnalyzer.white_pieces:
                     self.white_score += BoardEvaluator.piece_position_values[piece][r][c]
                 elif piece in PieceAnalyzer.black_pieces:
