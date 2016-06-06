@@ -37,19 +37,19 @@ class PieceMoveGenerator(BoardEvaluator):
         moves = list()
         ublocked = dblocked = lblocked = rblocked = False
         for offset in range(1, max_dist+1):
-            if not ublocked and PieceMoveGenerator.is_valid(r, c) and not self.is_own(self.board[r-offset][c]):
+            if not ublocked and PieceMoveGenerator.is_valid(r-offset, c) and not self.is_own(self.board[r-offset][c]):
                 moves.append(Move(r, c, r-offset, c))
             else:
                 ublocked = True
-            if not dblocked and PieceMoveGenerator.is_valid(r, c) and not self.is_own(self.board[r+offset][c]):
+            if not dblocked and PieceMoveGenerator.is_valid(r+offset, c) and not self.is_own(self.board[r+offset][c]):
                 moves.append(Move(r, c, r+offset, c))
             else:
                 dblocked = True
-            if not lblocked and PieceMoveGenerator.is_valid(r, c) and not self.is_own(self.board[r][c-offset]):
+            if not lblocked and PieceMoveGenerator.is_valid(r, c-offset) and not self.is_own(self.board[r][c-offset]):
                 moves.append(Move(r, c, r, c-offset))
             else:
                 lblocked = True
-            if not rblocked and PieceMoveGenerator.is_valid(r, c) and not self.is_own(self.board[r][c+offset]):
+            if not rblocked and PieceMoveGenerator.is_valid(r, c+offset) and not self.is_own(self.board[r][c+offset]):
                 moves.append(Move(r, c, r, c+offset))
         return moves
 
