@@ -25,7 +25,7 @@ class MoveGenerator(PieceMoveGenerator):
         random.shuffle(moves)
         return moves
 
-    def moves_evaluated(self):
+    def moves_evaluated(self) -> List[Move]:
         moves = self.moves_shuffled()
         evals = list()
         for mv in moves:
