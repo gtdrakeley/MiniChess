@@ -27,7 +27,7 @@ class MoveGenerator(PieceMoveGenerator):
 
     def moves_evaluated(self) -> List[Move]:
         moves = self.moves_shuffled()
-        evals = list()
+        evals = list()  # type: List[int]
         for mv in moves:
             self.move(mv)
             evals.append(self.eval)
