@@ -18,6 +18,7 @@ class MoveGenerator(PieceMoveGenerator):
                     moves.extend(self.piece_moves(piece, r, c))
                 elif self.playing == 'B' and piece in PieceAnalyzer.black_pieces:
                     moves.extend(self.piece_moves(piece, r, c))
+        print(list(map(str, moves)), end='\n\n\n')
         return moves
 
     def moves_shuffled(self) -> List[Move]:

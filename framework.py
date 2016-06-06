@@ -17,5 +17,5 @@ class FrameworkInterface(MoveDecider):
         return list(map(str, moves))
 
     def fw_moves_evaluated(self):
-        moves = self.moves_evaluated()
+        mvs = self.moves_evaluated()
         return list(map(str, moves))
