@@ -110,7 +110,7 @@ class BoardEvaluator(PieceAnalyzer):
 
     def undo(self) -> None:
         super().undo()
-        self.white_pieces, self.black_score = self.eval_history.pop()
+        self.white_score, self.black_score = self.eval_history.pop()
 
     def set_board(self, board_string: str) -> None:
         super().set_board(board_string)
