@@ -21,11 +21,7 @@ class Board:
 
     def set_board(self, string: str) -> None:
         turn_state, *board_state = string.split('\n')
-        print(turn_state)
-        print(board_state)
         turn, playing = turn_state.split()
-        print(turn)
-        print(playing)
         self.turn, self.playing = int(turn), playing
         self.board = list(map(list, filter(None, board_state)))
 
