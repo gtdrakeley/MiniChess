@@ -17,7 +17,7 @@ class Board:
         self.__init__()
 
     def get_board(self) -> str:
-        return '{} {}\n{}\n'.format(self.turn, self.playing, map(''.join, self.board))
+        return '{} {}\n{}\n'.format(self.turn, self.playing, '\n'.join(map(''.join, self.board)))
 
     def set_board(self, board_string: str) -> None:
         turn_state, *board_state = board_string.split('\n')
