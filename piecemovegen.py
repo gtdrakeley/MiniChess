@@ -39,18 +39,28 @@ class PieceMoveGenerator(BoardEvaluator):
         for offset in range(1, max_dist+1):
             if not ublocked and PieceMoveGenerator.is_valid(r-offset, c) and not self.is_own(self.board[r-offset][c]):
                 moves.append(Move(r, c, r-offset, c))
+                if self.is_enemy(self.board[r-offset][c]):
+                    ublocked = True
             else:
                 ublocked = True
             if not dblocked and PieceMoveGenerator.is_valid(r+offset, c) and not self.is_own(self.board[r+offset][c]):
                 moves.append(Move(r, c, r+offset, c))
+                if self.is_enemy(self.board[r+offset][c]):
+                    dblocked = True
             else:
                 dblocked = True
             if not lblocked and PieceMoveGenerator.is_valid(r, c-offset) and not self.is_own(self.board[r][c-offset]):
                 moves.append(Move(r, c, r, c-offset))
+                if self.is_enemy(self.board[r][c-offset]):
+                    lblocked = True
             else:
                 lblocked = True
             if not rblocked and PieceMoveGenerator.is_valid(r, c+offset) and not self.is_own(self.board[r][c+offset]):
                 moves.append(Move(r, c, r, c+offset))
+                if self.is_enemy(self.board[r][c+offset]):
+                    rblocked = True
+            else:
+                rblocked = True
         return moves
 
     def diagonal_moves(self, r: int, c: int, max_dist=5) -> List[Move]:
@@ -60,21 +70,29 @@ class PieceMoveGenerator(BoardEvaluator):
             if not ulblocked and PieceMoveGenerator.is_valid(r-offset, c-offset) and \
                     not self.is_own(self.board[r-offset][c-offset]):
                 moves.append(Move(r, c, r-offset, c-offset))
+                if self.is_enemy(self.board[r-offset][c-offset]):
+                    ulblocked = True
             else:
                 ulblocked = True
             if not urblocked and PieceMoveGenerator.is_valid(r-offset, c+offset) and \
                     not self.is_own(self.board[r-offset][c+offset]):
                 moves.append(Move(r, c, r-offset, c+offset))
+                if self.is_enemy(self.board[r-offset][c+offset]):
+                    urblocked = True
             else:
                 urblocked = True
             if not dlblocked and PieceMoveGenerator.is_valid(r+offset, c-offset) and \
                     not self.is_own(self.board[r+offset][c-offset]):
                 moves.append(Move(r, c, r+offset, c-offset))
+                if self.is_enemy(self.board[r+offset][c-offset]):
+                    dlblocked = True
             else:
                 dlblocked = True
             if not drblocked and PieceMoveGenerator.is_valid(r+offset, c+offset) and \
                     not self.is_own(self.board[r+offset][c+offset]):
                 moves.append(Move(r, c, r+offset, c+offset))
+                if self.is_enemy(self.board[r+offset][c+offset]):
+                    drblocked = True
             else:
                 drblocked = True
         return moves
