@@ -2,7 +2,7 @@ from movegen import MoveGenerator
 from boardeval import BoardEvaluator
 
 
-class MoveDecider(MoveGenerator):
+class AI(MoveGenerator):
     def __init__(self) -> None:
         super().__init__()
 
@@ -22,6 +22,7 @@ class MoveDecider(MoveGenerator):
         for mv in self.moves_shuffled():
             self.move(mv)
             temp = -self.negamax(depth-1, duration)
+            self.undo()
             if temp > score:
                 best, score = mv, temp
         self.move(best)

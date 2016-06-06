@@ -1,8 +1,8 @@
-from movedecider import MoveDecider
+from ai import AI
 from move import Move
 
 
-class FrameworkInterface(MoveDecider):
+class FrameworkInterface(AI):
     def __init__(self):
         super().__init__()
 
