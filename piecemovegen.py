@@ -116,7 +116,7 @@ class PieceMoveGenerator(BoardEvaluator):
         if self.playing == 'W':
             if PieceMoveGenerator.is_valid(r-1, c) and self.is_nothing(self.board[r-1][c]):
                 moves.append(Move(r, c, r-1, c))
-            if PieceMoveGenerator.is_valid(r-1, c-1 and self.is_enemy(self.board[r-1][c-1])):
+            if PieceMoveGenerator.is_valid(r-1, c-1) and self.is_enemy(self.board[r-1][c-1]):
                 moves.append(Move(r, c, r-1, c-1))
             if PieceMoveGenerator.is_valid(r-1, c+1) and self.is_enemy(self.board[r-1][c+1]):
                 moves.append(Move(r, c, r-1, c+1))
