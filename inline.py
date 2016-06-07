@@ -123,7 +123,7 @@ def evaluation() -> int:
 
 
 def evaluate_board() -> None:
-    global piece_position_values, white_score, black_score
+    global board, piece_position_values, white_score, black_score
     white_score, black_score = 0, 0
     for r, row in enumerate(board):
         for c, piece in enumerate(row):
