@@ -101,6 +101,7 @@ def set_board(string: str) -> None:
     turn, playing = turn_state.split()
     turn, playing = int(turn), playing
     board = list(map(list, filter(None, board_state)))
+    evaluate_board()
 
 
 def winner() -> str:
