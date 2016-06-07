@@ -148,10 +148,10 @@ def move(mv: Move) -> None:
     dest_piece = board[mv.dest_row][mv.dest_column]
     if src_piece in white_pieces:
         white_score -= piece_position_values[src_piece][mv.src_row][mv.src_column]
-        black_score -= piece_position_values[dest_piece][5 - mv.dest_row][4 - mv.dest_column]
+        black_score -= piece_position_values[dest_piece][5-mv.dest_row][4-mv.dest_column]
     else:
         white_score -= piece_position_values[dest_piece][mv.dest_row][mv.dest_column]
-        black_score -= piece_position_values[src_piece][5 - mv.src_row][4 - mv.src_column]
+        black_score -= piece_position_values[src_piece][5-mv.src_row][4-mv.src_column]
     # Perform the move
     if playing == 'W':
         playing = 'B'
