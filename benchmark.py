@@ -27,5 +27,5 @@ if inline.winner() != '?':
 
 print('Benchmarking {} moves...'.format(n))
 print('\tChessAI: {}'.format(timeit(loop1, setup=setup1, number=n)))
-print('\tAI: {}'.format(timeit(loop1, setup=setup2, number=80*n)))
-print('\tInline: {}'.format(timeit(loop2, setup=setup3, number=80*n)))
+print('\tAI: {}'.format(timeit(loop1, setup=setup2, number=n)))
+print('\tInline: {}'.format(timeit(loop2, setup=setup3, number=n)))
