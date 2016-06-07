@@ -2,7 +2,7 @@ from timeit import timeit
 from sys import argv
 
 
-n = int(eval(argv[1:]))
+n = int(eval(argv[1]))
 setup1 = '''
 import chessai
 ai = chessai.ChessAI()
