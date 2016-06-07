@@ -55,11 +55,11 @@ piece_position_values['b'] = piece_position_values['B']
 piece_position_values['n'] = piece_position_values['N']
 piece_position_values['r'] = piece_position_values['R']
 piece_position_values['p'] = piece_position_values['P']
-max_eval = (max(map(max, piece_position_values['K'])) +
-            max(map(max, piece_position_values['Q'])) * 6 +
-            max(map(max, piece_position_values['B'])) +
-            max(map(max, piece_position_values['N'])) +
-            max(map(max, piece_position_values['R'])))
+eval_bound = (max(map(max, piece_position_values['K'])) +
+              max(map(max, piece_position_values['Q'])) * 6 +
+              max(map(max, piece_position_values['B'])) +
+              max(map(max, piece_position_values['N'])) +
+              max(map(max, piece_position_values['R'])) + 1)
 
 # ***************************************************  GLOBALS  ********************************************************
 turn = 1  # type: int
@@ -405,9 +405,9 @@ def move_greedy() -> str:
 
 
 def move_negamax(depth: int, duration: int) -> str:
-    global max_eval
+    global eval_bound
     best = None
-    score = -max_eval
+    score = -eval_bound
     for mv in moves_shuffled():
         move(mv)
         temp = -negamax(depth-1, duration)
@@ -420,10 +420,10 @@ def move_negamax(depth: int, duration: int) -> str:
 
 
 def negamax(depth: int, duration: int) -> int:
-    global max_eval
+    global eval_bound
     if depth == 0 or winner() != '?':
         return evaluation()
-    score = -max_eval
+    score = -eval_bound
     for mv in moves_shuffled():
         move(mv)
         score = max(score, -negamax(depth-1, duration))
@@ -432,10 +432,10 @@ def negamax(depth: int, duration: int) -> int:
 
 
 def move_alphabeta(depth, duration) -> str:
-    global max_eval
+    global eval_bound
     best = None
-    alpha = -max_eval
-    beta = max_eval
+    alpha = -eval_bound
+    beta = eval_bound
     # temp = 0
     for mv in moves_evaluated():
         move(mv)
@@ -449,10 +449,10 @@ def move_alphabeta(depth, duration) -> str:
 
 
 def alphabeta(depth, duration, alpha: int, beta: int) -> int:
-    global max_eval
+    global eval_bound
     if depth == 0 or winner() != '?':
         return evaluation()
-    score = -max_eval
+    score = -eval_bound
     for mv in moves_evaluated():
         move(mv)
         score = max(score, -alphabeta(depth-1, duration, -beta, -alpha))
