@@ -1,4 +1,4 @@
-from ai import AI
+from cai import AI
 from move import Move
 
 
