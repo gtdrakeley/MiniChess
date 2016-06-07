@@ -410,7 +410,7 @@ def move_negamax(depth: int, duration: int) -> str:
     score = -max_eval
     for mv in moves_shuffled():
         move(mv)
-        temp = -(negamax(depth-1, duration))
+        temp = -negamax(depth-1, duration)
         undo()
         if temp > score:
             best, score = mv, temp
@@ -421,11 +421,11 @@ def move_negamax(depth: int, duration: int) -> str:
 def negamax(depth: int, duration: int) -> int:
     global max_eval
     if depth == 0 or winner() != '?':
-        return eval
+        return evaluation()
     score = -max_eval
     for mv in moves_shuffled():
         move(mv)
-        score = max(score, -(negamax(depth - 1, duration)))
+        score = max(score, -negamax(depth-1, duration))
         undo()
     return score
 
@@ -438,7 +438,7 @@ def move_alphabeta(depth, duration) -> str:
     # temp = 0
     for mv in moves_evaluated():
         move(mv)
-        temp = -(alphabeta(depth-1, duration, -beta, -alpha))
+        temp = -alphabeta(depth-1, duration, -beta, -alpha)
         undo()
         if temp > alpha:
             best = mv
@@ -450,11 +450,11 @@ def move_alphabeta(depth, duration) -> str:
 def alphabeta(depth, duration, alpha: int, beta: int) -> int:
     global max_eval
     if depth == 0 or winner() != '?':
-        return eval
+        return evaluation()
     score = -max_eval
     for mv in moves_evaluated():
         move(mv)
-        score = max(score, -(alphabeta(depth-1, duration, -beta, -alpha)))
+        score = max(score, -alphabeta(depth-1, duration, -beta, -alpha))
         undo()
         alpha = max(alpha, score)
         if alpha >= beta:
