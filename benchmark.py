@@ -2,7 +2,7 @@ from timeit import timeit
 from sys import argv
 
 
-n = int(argv[1])
+n = float(eval(argv[1]))
 setup1 = '''
 import chessai
 ai = chessai.ChessAI()
@@ -25,6 +25,6 @@ if inline.winner() != '?':
  inline.reset()
  '''
 
-timeit(loop1, setup=setup1, number=80*n)
-timeit(loop1, setup=setup2, number=80*n)
-timeit(loop2, setup=setup3, number=80*n)
+timeit(loop1, setup=setup1, number=int(80*n))
+timeit(loop1, setup=setup2, number=int(80*n))
+timeit(loop2, setup=setup3, number=int(80*n))
