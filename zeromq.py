@@ -32,6 +32,7 @@ def start(main_int_zeromq, main_str_name):
 
     # ai = ChessAI()
     # ai = FrameworkInterface()
+    inline.initialize()
 
     while zeromq_bool_running:
         # CHANGES - json_in variable does not need to be set to None at the end of the file as this call will overwrite

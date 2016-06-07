@@ -177,7 +177,6 @@ class ChessAI:
                     moves.extend(self.piece_moves(piece, r, c))
                 elif self.playing == 'B' and piece in ChessAI.black_pieces:
                     moves.extend(self.piece_moves(piece, r, c))
-        print(list(map(str, moves)))
         return moves
 
     def piece_moves(self,  piece: str, r: int, c: int):

@@ -78,6 +78,10 @@ eval_history = list()  # type: List[Tuple[int, int]]
 # ***************************************************  FUNCTIONS  ******************************************************
 
 
+def initialize():
+    evaluate_board()
+
+
 def reset() -> None:
     global turn, playing, board
     turn = 1
@@ -88,6 +92,7 @@ def reset() -> None:
                   list('.....'),
                   list('PPPPP'),
                   list('RNBQK')])
+    evaluate_board()
 
 
 def get_board() -> str:
