@@ -106,10 +106,10 @@ def set_board(string: str) -> None:
 
 def winner() -> str:
     global turn, board
-    board = ''.join(map(''.join, board))
-    if 'K' in board and 'k' not in board:
+    cat_board = ''.join(map(''.join, board))
+    if 'K' in cat_board and 'k' not in cat_board:
         return 'W'
-    elif 'K' not in board and 'k' in board:
+    elif 'K' not in cat_board and 'k' in cat_board:
         return 'B'
     elif turn > 40:
         return '='
