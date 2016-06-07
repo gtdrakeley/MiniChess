@@ -413,7 +413,8 @@ def move_negamax(depth: int, duration: int) -> str:
         temp = -negamax(depth-1, duration)
         undo()
         if temp > score:
-            best, score = mv, temp
+            best = mv
+            score = temp
     move(best)
     return str(best)
 
