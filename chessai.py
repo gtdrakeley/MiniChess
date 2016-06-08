@@ -446,7 +446,6 @@ class ChessAI:
     def move_negamax(self, depth: int, duration: int):
         best = None
         score = -ChessAI.max_score
-        temp = 0
         for move in self.moves_shuffled():
             self.move(move)
             temp = -self.negamax(depth - 1, duration)
@@ -519,7 +518,6 @@ class ChessAI:
             if milliseconds() - self.start_time >= duration:
                 raise TimeoutError(depth)
             else:
-                pass
                 self.recur_calls = 0
         if depth == 0 or self.winner() != '?':
             return self.eval()
@@ -532,4 +530,3 @@ class ChessAI:
             if alpha >= beta:
                 break
         return score
-
