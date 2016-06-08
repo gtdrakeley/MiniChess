@@ -466,7 +466,7 @@ def move_alphabeta(depth, duration) -> str:
                 best = temp_mv
                 iter_depth += 1
                 if iter_depth > 64:
-                    break
+                    raise TimeoutError(0)
         except TimeoutError as e:
             print(iter_depth-1)
             print(move_duration)
