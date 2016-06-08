@@ -531,14 +531,14 @@ def move_alphabeta(depth, duration) -> str:
 
 def alphabeta(depth, duration, alpha: int, beta: int) -> int:
     global eval_bound, goal_depth, recur_calls, start_time
-    if depth == 0 or winner() != '?':
-        return evaluation()
     recur_calls += 1
-    if duration > 0 and recur_calls >= 20000:
+    if duration > 0 and recur_calls > 20000:
         if milliseconds()-start_time >= duration:
             raise TimeoutError(depth)
         else:
             recur_calls = 0
+    if depth == 0 or winner() != '?':
+        return evaluation()
     score = -eval_bound
     for mv in moves_evaluated():
         move(mv)
