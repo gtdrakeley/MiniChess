@@ -322,6 +322,8 @@ def axis_moves(r: int, c: int, max_dist=5) -> List[Move]:
                 rblocked = True
         else:
             rblocked = True
+        if ublocked and dblocked and lblocked and rblocked:
+            break
     return mvs
 
 
@@ -358,6 +360,8 @@ def diagonal_moves(r: int, c: int, max_dist=5) -> List[Move]:
                 drblocked = True
         else:
             drblocked = True
+        if ulblocked and urblocked and dlblocked and drblocked:
+            break
     return mvs
 
 
@@ -490,13 +494,13 @@ def negamax(depth: int, duration: int) -> int:
 
 
 def move_alphabeta(depth, duration) -> str:
-    global turn, eval_bound, goal_depth, recur_calls, start_time
+    global turn, playing, eval_bound, goal_depth, recur_calls, start_time
     best = None
     alpha = -eval_bound
     beta = eval_bound
     if depth < 0:
         temp_mv = None
-        iter_depth = 2
+        iter_depth = 1
         move_duration = (duration - 1500) / (41 - turn)
         start_time = milliseconds()
         try:
@@ -511,7 +515,7 @@ def move_alphabeta(depth, duration) -> str:
                         alpha = temp
                 best = temp_mv
                 iter_depth += 1
-                if iter_depth > 64:
+                if iter_depth > 80-(turn*2-(1 if playing == 'W' else 0)):
                     raise TimeoutError(iter_depth)
         except TimeoutError as e:
             print(iter_depth-1)
