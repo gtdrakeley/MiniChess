@@ -1,5 +1,5 @@
 import chessai
-import inline
+import chess
 from random import random
 from sys import argv
 
@@ -16,9 +16,9 @@ if random() <= 0.5:
         print()
         print()
         print(ai.board_get()[:-1])
-        start = inline.milliseconds()
+        start = chess.milliseconds()
         ai.move_alphabeta(-1, p1_time)
-        p1_time -= inline.milliseconds() - start
+        p1_time -= chess.milliseconds() - start
         if p1_time < 0:
             print('B-Inline wins via time!')
             break
@@ -28,23 +28,23 @@ if random() <= 0.5:
         elif ai.winner() != '?':
             print('W-ChessAI wins by taking the king!')
             break
-        inline.set_board(ai.board_get())
+        chess.set_board(ai.board_get())
         print()
         print()
-        print(inline.get_board()[:-1])
-        start = inline.milliseconds()
-        inline.move_alphabeta(-1, p2_time)
-        p2_time -= inline.milliseconds() - start
+        print(chess.get_board()[:-1])
+        start = chess.milliseconds()
+        chess.move_alphabeta(-1, p2_time)
+        p2_time -= chess.milliseconds() - start
         if p2_time < 0:
             print('W-ChessAI wins via time!')
             break
-        elif inline.winner() == '=':
+        elif chess.winner() == '=':
             print('Tie game!')
             break
-        elif inline.winner() != '?':
+        elif chess.winner() != '?':
             print('B-Inline wins by taking the king!')
             break
-        ai.board_set(inline.get_board())
+        ai.board_set(chess.get_board())
 else:
     print('Inline is W')
     print()
@@ -53,26 +53,26 @@ else:
     while True:
         print()
         print()
-        print(inline.get_board()[:-1])
-        start = inline.milliseconds()
-        inline.move_alphabeta(-1, p2_time)
-        p2_time -= inline.milliseconds() - start
+        print(chess.get_board()[:-1])
+        start = chess.milliseconds()
+        chess.move_alphabeta(-1, p2_time)
+        p2_time -= chess.milliseconds() - start
         if p2_time < 0:
             print('B-ChessAI wins via time!')
             break
-        elif inline.winner() == '=':
+        elif chess.winner() == '=':
             print('Tie game!')
             break
-        elif inline.winner() != '?':
+        elif chess.winner() != '?':
             print('W-Inline wins by taking the king!')
             break
-        ai.board_set(inline.get_board())
+        ai.board_set(chess.get_board())
         print()
         print()
         print(ai.board_get()[:-1])
-        start = inline.milliseconds()
+        start = chess.milliseconds()
         ai.move_alphabeta(-1, p1_time)
-        p1_time -= inline.milliseconds() - start
+        p1_time -= chess.milliseconds() - start
         if p1_time < 0:
             print('W-Inline wins via time!')
             break
@@ -82,4 +82,4 @@ else:
         elif ai.winner() != '?':
             print('B-ChessAI wins by taking the king!')
             break
-        inline.set_board(ai.board_get())
+        chess.set_board(ai.board_get())
