@@ -488,7 +488,7 @@ class ChessAI:
                     best = temp_best
                     iter_depth += 1
                     if iter_depth > 64:
-                        raise TimeoutError(0)
+                        raise TimeoutError(iter_depth)
             except TimeoutError as e:
                 print(iter_depth - 1)
                 print(self.move_duration)
