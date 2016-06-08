@@ -62,10 +62,13 @@ class ChessAI:
                     'n': 300, 'N': 300,
                     'r': 500, 'R': 500,
                     'p': 100, 'P': 100}
+    piece_values['k'] = piece_values['K'] = 20000
+    """
     piece_values['k'] = piece_values['K'] = 2 * (piece_values['q'] * 6 +
                                                  piece_values['b'] +
                                                  piece_values['n'] +
                                                  piece_values['r'])
+    """
     max_score = (piece_values['k'] +
                  piece_values['q'] * 6 +
                  piece_values['b'] +
