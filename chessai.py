@@ -1,5 +1,11 @@
 import random
+import time
 from collections import namedtuple
+
+
+def milliseconds() -> int:
+    return int(round(time.time() * 1000))
+
 
 # Position = namedtuple('Position', ['row', 'column'])
 BoardHistory = namedtuple('BoardHistory', ['move', 'start_piece', 'end_piece'])
@@ -51,12 +57,15 @@ class Move:
 class ChessAI:
     white_pieces = 'KQBNRP'
     black_pieces = 'kqbnrp'
-    piece_values = {'k': 200000, 'K': 200000,
-                    'q': 20000, 'Q': 20000,
-                    'b': 5000, 'B': 5000,
-                    'n': 3000, 'N': 3000,
-                    'r': 5000, 'R': 5000,
-                    'p': 1000, 'P': 1000}
+    piece_values = {'q': 2000, 'Q': 2000,
+                    'b': 500, 'B': 500,
+                    'n': 300, 'N': 300,
+                    'r': 500, 'R': 500,
+                    'p': 100, 'P': 100}
+    piece_values['k'] = piece_values['K'] = 2 * (piece_values['q'] * 6 +
+                                                 piece_values['b'] +
+                                                 piece_values['n'] +
+                                                 piece_values['r'])
     max_score = (piece_values['k'] +
                  piece_values['q'] * 6 +
                  piece_values['b'] +
@@ -67,6 +76,9 @@ class ChessAI:
         self.turn = 1
         self.playing = 'W'
         self.history = list()
+        self.move_duration = -1
+        self.start_time = 0
+        self.recur_calls = 0
         self.board = [bytearray(b'kqbnr'),
                       bytearray(b'ppppp'),
                       bytearray(b'.....'),
@@ -81,6 +93,9 @@ class ChessAI:
         self.turn = 1
         self.playing = 'W'
         self.history = list()
+        self.move_duration = -1
+        self.start_time = 0
+        self.recur_calls = 0
         self.board = [bytearray(b'kqbnr'),
                       bytearray(b'ppppp'),
                       bytearray(b'.....'),
@@ -179,7 +194,7 @@ class ChessAI:
                     moves.extend(self.piece_moves(piece, r, c))
         return moves
 
-    def piece_moves(self,  piece: str, r: int, c: int):
+    def piece_moves(self, piece: str, r: int, c: int):
         moves = list()
         if piece == 'K' or piece == 'k':
             moves.extend(self.axis_moves(r, c, 1))
@@ -365,7 +380,7 @@ class ChessAI:
 
     def fw_move(self, string: str):
         self.move(Move.fromstr(string[0:5]))
-    
+
     def fw_moves_shuffled(self):
         moves = self.moves_shuffled()
         return list(map(str, moves))
@@ -431,7 +446,6 @@ class ChessAI:
     def move_negamax(self, depth: int, duration: int):
         best = None
         score = -ChessAI.max_score
-        # temp = 0
         for move in self.moves_shuffled():
             self.move(move)
             temp = -self.negamax(depth - 1, duration)
@@ -453,21 +467,58 @@ class ChessAI:
         return score
 
     def move_alphabeta(self, depth: int, duration: int):
-        best = None
-        alpha = -ChessAI.max_score
-        beta = ChessAI.max_score
-        # temp = 0
-        for move in self.moves_evaluated():
-            self.move(move)
-            temp = -self.alphabeta(depth - 1, duration, -beta, -alpha)
-            self.undo()
-            if temp > alpha:
-                best = move
-                alpha = temp
+        if depth < 0:
+            try:
+                if self.move_duration < 0:
+                    self.move_duration = (duration - 1500) / (41 - self.turn)
+                    self.start_time = milliseconds()
+                best = None
+                temp_best = None
+                alpha = -ChessAI.max_score
+                beta = ChessAI.max_score
+                iter_depth = 2
+                while True:
+                    for move in self.moves_evaluated():
+                        self.move(move)
+                        temp = -self.alphabeta(iter_depth - 1, self.move_duration, -beta, -alpha)
+                        self.undo()
+                        if temp > alpha:
+                            temp_best = move
+                            alpha = temp
+                    best = temp_best
+                    iter_depth += 1
+                    if iter_depth > 64:
+                        break
+            except TimeoutError as e:
+                print(iter_depth - 1)
+                print(self.move_duration)
+                for _ in range(iter_depth - e.args[0]):
+                    self.undo()
+                self.move_duration = -1
+                self.start_time = 0
+        else:
+            best = None
+            alpha = -ChessAI.max_score
+            beta = ChessAI.max_score
+            temp = 0
+            for move in self.moves_evaluated():
+                self.move(move)
+                temp = -self.alphabeta(depth - 1, 0, -beta, -alpha)
+                self.undo()
+                if temp > alpha:
+                    best = move
+                    alpha = temp
         self.move(best)
+        self.recur_calls = 0
         return str(best)
 
     def alphabeta(self, depth: int, duration: int, alpha: int, beta: int):
+        self.recur_calls += 1
+        if duration > 0 and not self.recur_calls > 20000:
+            if milliseconds() - self.start_time >= duration:
+                raise TimeoutError(depth)
+            else:
+                self.recur_calls = 0
         if depth == 0 or self.winner() != '?':
             return self.eval()
         score = -ChessAI.max_score
