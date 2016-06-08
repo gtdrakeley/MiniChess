@@ -1,9 +1,10 @@
 import chessai
 import inline
 from random import random
+from sys import argv
 
 
-p1_time = p2_time = 300000
+p1_time = p2_time = int(argv[1])
 ai = chessai.ChessAI()
 
 if random() <= 0.5:
