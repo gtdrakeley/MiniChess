@@ -36,13 +36,13 @@ if random() <= 0.5:
         inline.move_alphabeta(-1, p2_time)
         p2_time -= inline.milliseconds() - start
         if p2_time < 0:
-            print('W wins via time!')
+            print('W-ChessAI wins via time!')
             break
         elif inline.winner() == '=':
             print('Tie game!')
             break
         elif inline.winner() != '?':
-            print('B wins by taking the king!')
+            print('B-Inline wins by taking the king!')
             break
         ai.board_set(inline.get_board())
 else:
