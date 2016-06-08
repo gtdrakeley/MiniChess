@@ -8,7 +8,7 @@ import random
 # **************************************************  CONSTANTS  *******************************************************
 white_pieces = 'KQBNRP'
 black_pieces = 'kqbnrp'
-"""
+# """
 piece_position_values = {'K': [[20000, 20000, 20000, 20000, 20000],
                                [20000, 20000, 20000, 20000, 20000],
                                [20000, 20000, 20000, 20000, 20000],
@@ -51,6 +51,7 @@ piece_position_values = {'K': [[20000, 20000, 20000, 20000, 20000],
                                [0, 0, 0, 0, 0],
                                [0, 0, 0, 0, 0],
                                [0, 0, 0, 0, 0]]}
+# """
 """
 piece_position_values = {'K': [[3500, 3500, 2000, 3500, 3500],
                                [10000, 10000, 5000, 10000, 10000],
@@ -94,6 +95,7 @@ piece_position_values = {'K': [[3500, 3500, 2000, 3500, 3500],
                                [0, 0, 0, 0, 0],
                                [0, 0, 0, 0, 0],
                                [0, 0, 0, 0, 0]]}
+# """
 piece_position_values['k'] = piece_position_values['K']
 piece_position_values['q'] = piece_position_values['Q']
 piece_position_values['b'] = piece_position_values['B']
