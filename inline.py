@@ -1,6 +1,7 @@
 from move import Move
 from history import History
 from typing import List, Tuple
+from time import time
 
 import random
 
@@ -74,6 +75,9 @@ white_score = 0
 black_score = 0
 board_history = list()  # type: List[History]
 eval_history = list()  # type: List[Tuple[int, int]]
+goal_depth = 0
+recur_calls = 0
+start_time = 0
 
 # ***************************************************  FUNCTIONS  ******************************************************
 
@@ -83,7 +87,7 @@ def initialize():
 
 
 def reset() -> None:
-    global turn, playing, board
+    global turn, playing, board, goal_depth, recur_calls, start_time
     turn = 1
     playing = 'W'
     board = list([list('kqbnr'),
@@ -92,6 +96,9 @@ def reset() -> None:
                   list('.....'),
                   list('PPPPP'),
                   list('RNBQK')])
+    goal_depth = 0
+    recur_calls = 0
+    start_time = 0
     evaluate_board()
 
 
@@ -437,26 +444,57 @@ def negamax(depth: int, duration: int) -> int:
 
 
 def move_alphabeta(depth, duration) -> str:
-    global eval_bound
+    global turn, eval_bound, goal_depth, recur_calls, start_time
     best = None
     alpha = -eval_bound
     beta = eval_bound
-    # temp = 0
-    for mv in moves_evaluated():
-        move(mv)
-        temp = -alphabeta(depth-1, duration, -beta, -alpha)
-        undo()
-        if temp > alpha:
-            best = mv
-            alpha = temp
+    if depth < 0:
+        temp_mv = None
+        iter_depth = 2
+        move_duration = (duration - 1500) / (41 - turn)
+        start_time = milliseconds()
+        try:
+            while True:
+                goal_depth = iter_depth
+                for mv in moves_evaluated():
+                    move(mv)
+                    temp = -alphabeta(iter_depth-1, move_duration, -beta, -alpha)
+                    undo()
+                    if temp > alpha:
+                        temp_mv = mv
+                        alpha = temp
+                best = temp_mv
+                iter_depth += 1
+                if iter_depth > 64:
+                    break
+        except TimeoutError as e:
+            print(iter_depth-1)
+            print(move_duration)
+            for _ in range(iter_depth-e.args[0]):
+                undo()
+    else:
+        for mv in moves_evaluated():
+            move(mv)
+            temp = -alphabeta(depth-1, duration, -beta, -alpha)
+            undo()
+            if temp > alpha:
+                best = mv
+                alpha = temp
+    recur_calls = 0
     move(best)
     return str(best)
 
 
 def alphabeta(depth, duration, alpha: int, beta: int) -> int:
-    global eval_bound
+    global eval_bound, goal_depth, recur_calls, start_time
     if depth == 0 or winner() != '?':
         return evaluation()
+    recur_calls += 1
+    if duration > 0 and recur_calls >= 20000:
+        if milliseconds()-start_time >= duration:
+            raise TimeoutError(depth)
+        else:
+            recur_calls = 0
     score = -eval_bound
     for mv in moves_evaluated():
         move(mv)
@@ -484,3 +522,7 @@ def fw_moves_shuffled():
 def fw_moves_evaluated():
     mvs = moves_evaluated()
     return list(map(str, mvs))
+
+
+def milliseconds() -> int:
+    return int(round(time() * 1000))
