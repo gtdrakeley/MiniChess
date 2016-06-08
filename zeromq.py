@@ -5,10 +5,7 @@
 
 import json
 import zmq
-# import chess
-# from chessai import ChessAI
 import chess
-from framework import FrameworkInterface
 
 zeromq_bool_running = False
 
