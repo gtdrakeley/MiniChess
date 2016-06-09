@@ -508,6 +508,7 @@ class ChessAIV2:
                 alpha = -ChessAIV2.eval_bound
                 beta = ChessAIV2.eval_bound
                 iter_depth = 1
+                max_depth = 80-(self.turn+self.turn-(2 if self.playing == 'W' else 1))
                 while True:
                     for mv in self.moves_evaluated():
                         self.move(mv)
@@ -518,7 +519,7 @@ class ChessAIV2:
                             alpha = temp
                     best = temp_best
                     iter_depth += 1
-                    if iter_depth > 80-(self.turn+self.turn-(2 if self.playing == 'W' else 1)):
+                    if iter_depth > max_depth:
                         raise TimeoutError(iter_depth)
             except TimeoutError as e:
                 print(iter_depth - 1)
