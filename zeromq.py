@@ -5,7 +5,8 @@
 
 import json
 import zmq
-import chess
+# import chess
+import chessaiv2
 
 zeromq_bool_running = False
 
@@ -29,7 +30,8 @@ def start(main_int_zeromq, main_str_name):
 
     # ai = ChessAI()
     # ai = FrameworkInterface()
-    chess.initialize()
+    # chess.initialize()
+    ai = chessaiv2.ChessAIV2()
 
     while zeromq_bool_running:
         # CHANGES - json_in variable does not need to be set to None at the end of the file as this call will overwrite
@@ -41,51 +43,54 @@ def start(main_int_zeromq, main_str_name):
 
         elif json_in['strFunction'] == 'chess_reset':
             # chess.reset()
-            # ai.reset()
-            chess.reset()
+            ai.reset()
+            # chess.reset()
 
         elif json_in['strFunction'] == 'chess_boardGet':
             # json_out['strOut'] = chess.board_get()
             # json_out['strOut'] = ai.board_get()
-            # json_out['strOut'] = ai.get_board()
-            json_out['strOut'] = chess.get_board()
+            json_out['strOut'] = ai.get_board()
+            # json_out['strOut'] = chess.get_board()
 
         elif json_in['strFunction'] == 'chess_boardSet':
             # chess.board_set(json_in['strIn'])
             # ai.board_set(json_in['strIn'])
-            # ai.set_board(json_in['strIn'])
-            chess.set_board(json_in['strIn'])
+            ai.set_board(json_in['strIn'])
+            # chess.set_board(json_in['strIn'])
 
         elif json_in['strFunction'] == 'chess_winner':
             # json_out['strReturn'] = chess.winner()
-            # json_out['strReturn'] = ai.winner()
-            json_out['strReturn'] = chess.winner()
+            json_out['strReturn'] = ai.winner()
+            # json_out['strReturn'] = chess.winner()
 
         elif json_in['strFunction'] == 'chess_isValid':
             # json_out['boolReturn'] = chess.is_valid(json_in['intX'], json_in['intY'])
             # json_out['boolReturn'] = ChessAI.is_valid(json_in['intY'], json_in['intX'])
-            json_out['boolReturn'] = chess.is_valid(json_in['intY'], json_in['intX'])
+            # json_out['boolReturn'] = chess.is_valid(json_in['intY'], json_in['intX'])
+            json_out['boolReturn'] = chessaiv2.ChessAIV2.is_valid(json_in['intY'], json_in['intX'])
 
         elif json_in['strFunction'] == 'chess_isEnemy':
             # json_out['boolReturn'] = chess.is_enemy(json_in['strPiece'])
-            # json_out['boolReturn'] = ai.is_enemy(json_in['strPiece'])
-            json_out['boolReturn'] = chess.is_enemy(json_in['strPiece'])
+            json_out['boolReturn'] = ai.is_enemy(json_in['strPiece'])
+            # json_out['boolReturn'] = chess.is_enemy(json_in['strPiece'])
 
         elif json_in['strFunction'] == 'chess_isOwn':
             # json_out['boolReturn'] = chess.is_own(json_in['strPiece'])
-            # json_out['boolReturn'] = ai.is_own(json_in['strPiece'])
-            json_out['boolReturn'] = chess.is_own(json_in['strPiece'])
+            json_out['boolReturn'] = ai.is_own(json_in['strPiece'])
+            # json_out['boolReturn'] = chess.is_own(json_in['strPiece'])
 
         elif json_in['strFunction'] == 'chess_isNothing':
             # json_out['boolReturn'] = chess.is_nothing(json_in['strPiece'])
             # json_out['boolReturn'] = ChessAI.is_nothing(json_in['strPiece'])
-            json_out['boolReturn'] = chess.is_nothing(json_in['strPiece'])
+            # json_out['boolReturn'] = chess.is_nothing(json_in['strPiece'])
+            json_out['boolReturn'] = chessaiv2.ChessAIV2.is_nothing(json_in['strPiece'])
 
         elif json_in['strFunction'] == 'chess_eval':
             # json_out['intReturn'] = chess.eval()
             # json_out['intReturn'] = ai.eval()
             # json_out['intReturn'] = ai.eval
-            json_out['intReturn'] = chess.evaluation()
+            # json_out['intReturn'] = chess.evaluation()
+            json_out['intReturn'] = ai.evaluation()
 
         elif json_in['strFunction'] == 'chess_moves':
             # str_out = chess.moves()
@@ -93,8 +98,8 @@ def start(main_int_zeromq, main_str_name):
             # CHANGES - this is a more Pythonic way of calling join
             # json_out['strOut'] = ''.join(str_out)
             # str_out = ai.framework_moves()
-            # str_out = ai.fw_moves()
-            str_out = chess.fw_moves()
+            str_out = ai.fw_moves()
+            # str_out = chess.fw_moves()
             json_out['intOut'] = len(str_out)
             json_out['strOut'] = ''.join(str_out)
 
@@ -103,8 +108,8 @@ def start(main_int_zeromq, main_str_name):
             # json_out['intOut'] = len(str_out)
             # CHANGES - this is a more Pythonic way of calling join
             # json_out['strOut'] = ''.join(str_out)
-            # str_out = ai.fw_moves_shuffled()
-            str_out = chess.fw_moves_shuffled()
+            str_out = ai.fw_moves_shuffled()
+            # str_out = chess.fw_moves_shuffled()
             json_out['intOut'] = len(str_out)
             json_out['strOut'] = ''.join(str_out)
 
@@ -113,40 +118,40 @@ def start(main_int_zeromq, main_str_name):
             # json_out['intOut'] = len(str_out)
             # CHANGES - this is a more Pythonic way of calling join
             # json_out['strOut'] = ''.join(str_out)
-            # str_out = ai.fw_moves_evaluated()
-            str_out = chess.fw_moves_evaluated()
+            str_out = ai.fw_moves_evaluated()
+            # str_out = chess.fw_moves_evaluated()
             json_out['intOut'] = len(str_out)
             json_out['strOut'] = ''.join(str_out)
 
         elif json_in['strFunction'] == 'chess_move':
             # chess.move(json_in['strIn'])
-            # ai.fw_move(json_in['strIn'])
-            chess.fw_move(json_in['strIn'])
+            ai.fw_move(json_in['strIn'])
+            # chess.fw_move(json_in['strIn'])
 
         elif json_in['strFunction'] == 'chess_moveRandom':
             # json_out['strOut'] = chess.move_random()
-            # json_out['strOut'] = ai.move_random()
-            json_out['strOut'] = chess.move_random()
+            json_out['strOut'] = ai.move_random()
+            # json_out['strOut'] = chess.move_random()
 
         elif json_in['strFunction'] == 'chess_moveGreedy':
             # json_out['strOut'] = chess.move_greedy()
-            # json_out['strOut'] = ai.move_greedy()
-            json_out['strOut'] = chess.move_greedy()
+            json_out['strOut'] = ai.move_greedy()
+            # json_out['strOut'] = chess.move_greedy()
 
         elif json_in['strFunction'] == 'chess_moveNegamax':
             # json_out['strOut'] = chess.move_negamax(json_in['intDepth'], json_in['intDuration'])
-            # json_out['strOut'] = ai.move_negamax(json_in['intDepth'], json_in['intDuration'])
-            json_out['strOut'] = chess.move_negamax(json_in['intDepth'], json_in['intDuration'])
+            json_out['strOut'] = ai.move_negamax(json_in['intDepth'], json_in['intDuration'])
+            # json_out['strOut'] = chess.move_negamax(json_in['intDepth'], json_in['intDuration'])
 
         elif json_in['strFunction'] == 'chess_moveAlphabeta':
             # json_out['strOut'] = chess.move_alphabeta(json_in['intDepth'], json_in['intDuration'])
-            # json_out['strOut'] = ai.move_alphabeta(json_in['intDepth'], json_in['intDuration'])
-            json_out['strOut'] = chess.move_alphabeta(json_in['intDepth'], json_in['intDuration'])
+            json_out['strOut'] = ai.move_alphabeta(json_in['intDepth'], json_in['intDuration'])
+            # json_out['strOut'] = chess.move_alphabeta(json_in['intDepth'], json_in['intDuration'])
 
         elif json_in['strFunction'] == 'chess_undo':
             # chess.undo()
-            # ai.undo()
-            chess.undo()
+            ai.undo()
+            # chess.undo()
 
         socket_handle.send(json.dumps(json_out).encode())
 
