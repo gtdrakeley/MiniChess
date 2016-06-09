@@ -442,7 +442,7 @@ class ChessAIV2:
             self.undo()
         return score
 
-    def move_alphabeta(self, depth, duration) -> str:
+    def move_alphabeta(self, depth: int, duration: int) -> str:
         best = None
         alpha = -self.eval_bound
         beta = self.eval_bound
@@ -482,7 +482,7 @@ class ChessAIV2:
         self.move(best)
         return str(best)
 
-    def alphabeta(self, depth, duration, alpha: int, beta: int) -> int:
+    def alphabeta(self, depth: int, duration: int, alpha: int, beta: int) -> int:
         self.recur_calls += 1
         if duration > 0 and self.recur_calls > 20000:
             if milliseconds()-self.start_time >= duration:
