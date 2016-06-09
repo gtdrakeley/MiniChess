@@ -1,13 +1,13 @@
 from move import Move
 from history import History
 from typing import List, Tuple
-from time import time
+import time
 
 import random
 
 
 def milliseconds() -> int:
-    return int(round(time() * 1000))
+    return int(round(time.time() * 1000))
 
 
 class ChessAIV2:
