@@ -177,7 +177,7 @@ class ChessAIV2:
 
     def move(self, mv: Move) -> None:
         # Save board state
-        self.board_history.append(History(board, mv))
+        self.board_history.append(History(self.board, mv))
         self.eval_history.append((self.white_score, self.black_score))
         # Begin updating evaluation
         src_piece = self.board[mv.src_row][mv.src_column]
