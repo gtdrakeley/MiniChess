@@ -138,6 +138,7 @@ class ChessAIV2:
         self.goal_depth = 0
         self.recur_calls = 0
         self.start_time = 0
+        self.move_duration = 0
         self.evaluate_board()
 
     def reset(self) -> None:
@@ -450,10 +451,11 @@ class ChessAIV2:
             self.undo()
         return score
 
+    """
     def move_alphabeta(self, depth: int, duration: int) -> Tuple[int, str]:
         best = None
-        alpha = -self.eval_bound
-        beta = self.eval_bound
+        alpha = -ChessAIV2.eval_bound
+        beta = ChessAIV2.eval_bound
         if depth < 0:
             temp_mv = None
             iter_depth = 1
@@ -492,7 +494,60 @@ class ChessAIV2:
                 self.move(best)
                 return depth, str(best)
         return 0, ''
+    # """
 
+    # """
+    def move_alphabeta(self, depth: int, duration: int):
+        if depth < 0:
+            try:
+                if self.move_duration < 0:
+                    self.move_duration = (duration-1500) / (41-self.turn)
+                    self.start_time = milliseconds()
+                best = None
+                temp_best = None
+                alpha = -ChessAIV2.eval_bound
+                beta = ChessAIV2.eval_bound
+                iter_depth = 2
+                while True:
+                    for move in self.moves_evaluated():
+                        self.move(move)
+                        temp = -self.alphabeta(iter_depth - 1, self.move_duration, -beta, -alpha)
+                        self.undo()
+                        if temp > alpha:
+                            temp_best = move
+                            alpha = temp
+                    best = temp_best
+                    iter_depth += 1
+                    if iter_depth > 64:
+                        raise TimeoutError(iter_depth)
+            except TimeoutError as e:
+                print(iter_depth - 1)
+                print(self.move_duration)
+                for _ in range(iter_depth - e.args[0]):
+                    self.undo()
+                self.move_duration = -1
+                self.start_time = 0
+                self.recur_calls = 0
+                self.move(best)
+                return iter_depth-1, str(best)
+        else:
+            best = None
+            alpha = -ChessAIV2.eval_bound
+            beta = ChessAIV2.eval_bound
+            temp = 0
+            for move in self.moves_evaluated():
+                self.move(move)
+                temp = -self.alphabeta(depth - 1, 0, -beta, -alpha)
+                self.undo()
+                if temp > alpha:
+                    best = move
+                    alpha = temp
+            self.move(best)
+            return str(best)
+        return 0, ''
+    # """
+
+    """
     def alphabeta(self, depth: int, duration: int, alpha: int, beta: int) -> int:
         self.recur_calls += 1
         if duration > 0 and self.recur_calls > 20000:
@@ -501,7 +556,7 @@ class ChessAIV2:
                 raise TimeoutError(depth)
         if depth == 0 or self.winner() != '?':
             return self.evaluation()
-        score = -self.eval_bound
+        score = -ChessAIV2.eval_bound
         for mv in self.moves_evaluated():
             self.move(mv)
             score = max(score, -self.alphabeta(depth-1, duration, -beta, -alpha))
@@ -510,6 +565,28 @@ class ChessAIV2:
             if alpha >= beta:
                 break
         return score
+    # """
+
+    # """
+    def alphabeta(self, depth: int, duration: int, alpha: int, beta: int):
+        self.recur_calls += 1
+        if duration > 0 and self.recur_calls > 20000:
+            if milliseconds() - self.start_time >= duration:
+                raise TimeoutError(depth)
+            else:
+                self.recur_calls = 0
+        if depth == 0 or self.winner() != '?':
+            return self.evaluation()
+        score = -ChessAIV2.eval_bound
+        for move in self.moves_evaluated():
+            self.move(move)
+            score = max(score, -self.alphabeta(depth - 1, duration, -beta, -alpha))
+            self.undo()
+            alpha = max(alpha, score)
+            if alpha >= beta:
+                break
+        return score
+    # """
 
     def fw_move(self, string: str):
         self.move(Move.fromstr(string[0:5]))

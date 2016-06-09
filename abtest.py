@@ -2,7 +2,7 @@ import chessai
 import chessaiv2
 
 ai = chessai.ChessAI()
-ai2 = chessai.ChessAI()
+ai2 = chessaiv2.ChessAIV2()
 
 same = 0
 diff = 0
