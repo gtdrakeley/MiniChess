@@ -470,7 +470,7 @@ class ChessAIV2:
                             alpha = temp
                     best = temp_mv
                     iter_depth += 1
-                    if iter_depth > 80-(self.turn*2-(2 if self.playing == 'W' else 1)):
+                    if iter_depth > 80-(self.turn+self.turn-(2 if self.playing == 'W' else 1)):
                         raise TimeoutError(iter_depth)
             except TimeoutError as e:
                 print(iter_depth-1)
