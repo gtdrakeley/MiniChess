@@ -18,3 +18,5 @@ for i in range(100):
         same += 1
     else:
         diff += 1
+print('Same: {}'.format(same))
+print('Diff: {}'.format(diff))
