@@ -85,7 +85,9 @@ else:
             print('B-ChessAI wins by taking the king!')
             break
         ai2.set_board(ai.board_get())
-
+print('P1 Time: {}'.format(p1_time))
+print('P2 Time: {}'.format(p2_time))
+print('Difference: {}'.format(p1_time-p2_time))
 """
 if random() <= 0.5:
     print('ChessAI is W')
