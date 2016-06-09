@@ -74,7 +74,7 @@ else:
             print('Tie game!')
             break
         elif ai2.winner() != '?':
-            print('W-Inline wins by taking the king!')
+            print('W-ChessAIV2 wins by taking the king!')
             break
         p2_time -= delta
         print('W Remaining Time: {}'.format(p2_time))
@@ -87,7 +87,7 @@ else:
         p2_depths.append(ai.move_alphabeta(-1, p1_time)[0])
         delta = chess.milliseconds() - start
         if p1_time < 0:
-            print('W-Inline wins via time!')
+            print('W-ChessAIV2 wins via time!')
             break
         elif ai.winner() == '=':
             print('Tie game!')
