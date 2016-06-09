@@ -33,5 +33,5 @@ if chess.winner() != '?':
 print('Benchmarking {} moves with depth {} ({} games max)...'.format(n, depth, n/80))
 print('\tChessAI: {} seconds'.format(timeit(loop1, setup=setup1, number=n)))
 print('\tAI: {} seconds'.format(timeit(loop1, setup=setup2, number=n)))
-print('\tInline: {} seconds'.format(timeit(loop2, setup=setup3, number=n)))
+print('\tChess: {} seconds'.format(timeit(loop2, setup=setup3, number=n)))
 print('\tChessAIV2: {} seconds'.format(timeit(loop1, setup=setup4, number=n)))
