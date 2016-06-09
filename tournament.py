@@ -21,6 +21,7 @@ if random() <= 0.5:
         start = chess.milliseconds()
         ai.move_alphabeta(-1, p1_time)
         p1_time -= chess.milliseconds() - start
+        print('W Remaining Time: {}'.format(p1_time))
         if p1_time < 0:
             print('B-ChessAIV2 wins via time!')
             break
@@ -37,6 +38,7 @@ if random() <= 0.5:
         start = chess.milliseconds()
         ai2.move_alphabeta(-1, p2_time)
         p2_time -= chess.milliseconds() - start
+        print('B Remaining Time: {}'.format(p2_time))
         if p2_time < 0:
             print('W-ChessAI wins via time!')
             break
@@ -59,6 +61,7 @@ else:
         start = chess.milliseconds()
         ai2.move_alphabeta(-1, p2_time)
         p2_time -= chess.milliseconds() - start
+        print('W Remaining Time: {}'.format(p2_time))
         if p2_time < 0:
             print('B-ChessAI wins via time!')
             break
@@ -75,6 +78,7 @@ else:
         start = chess.milliseconds()
         ai.move_alphabeta(-1, p1_time)
         p1_time -= chess.milliseconds() - start
+        print('B Remaining Time: {}'.format(p1_time))
         if p1_time < 0:
             print('W-Inline wins via time!')
             break
@@ -85,9 +89,6 @@ else:
             print('B-ChessAI wins by taking the king!')
             break
         ai2.set_board(ai.board_get())
-print('P1 Time: {}'.format(p1_time))
-print('P2 Time: {}'.format(p2_time))
-print('Difference: {}'.format(p1_time-p2_time))
 """
 if random() <= 0.5:
     print('ChessAI is W')
@@ -166,3 +167,8 @@ else:
             break
         chess.set_board(ai.board_get())
 """
+print()
+print()
+print('W Time Remaining: {}'.format(p1_time))
+print('B Time Remaining: {}'.format(p2_time))
+print('Difference (W minus B): {}'.format(p1_time-p2_time))

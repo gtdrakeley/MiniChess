@@ -473,7 +473,7 @@ class ChessAI:
         if depth < 0:
             try:
                 if self.move_duration < 0:
-                    self.move_duration = (duration - 1500) / (41 - self.turn)
+                    self.move_duration = (duration-1500) / (41-self.turn)
                     self.start_time = milliseconds()
                 best = None
                 temp_best = None

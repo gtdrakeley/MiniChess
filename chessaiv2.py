@@ -449,7 +449,7 @@ class ChessAIV2:
         if depth < 0:
             temp_mv = None
             iter_depth = 1
-            move_duration = (duration - 1500) / (41 - self.turn)
+            move_duration = (duration-1500) / (41-self.turn)
             self.start_time = milliseconds()
             try:
                 while True:
