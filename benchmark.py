@@ -25,9 +25,9 @@ if ai.winner() != '?':
  ai.reset()
 '''.replace('depth', str(depth))
 loop2 = '''
-inline.move_alphabeta(depth, 0)
-if inline.winner() != '?':
- inline.reset()
+chess.move_alphabeta(depth, 0)
+if chess.winner() != '?':
+ chess.reset()
 '''.replace('depth', str(depth))
 
 print('Benchmarking {} moves with depth {} ({} games max)...'.format(n, depth, n/80))

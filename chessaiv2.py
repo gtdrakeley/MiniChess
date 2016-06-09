@@ -372,7 +372,7 @@ class ChessAIV2:
 
     def pawn_moves(self, r: int, c: int) -> List[Move]:
         mvs = list()
-        if playing == 'W':
+        if self.playing == 'W':
             if ChessAIV2.is_valid(r-1, c) and ChessAIV2.is_nothing(self.board[r-1][c]):
                 mvs.append(Move(r, c, r-1, c))
             if ChessAIV2.is_valid(r-1, c-1) and self.is_enemy(self.board[r-1][c-1]):
