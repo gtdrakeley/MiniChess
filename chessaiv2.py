@@ -214,9 +214,9 @@ class ChessAIV2:
 
     def undo(self) -> None:
         assert self.board_history, 'Attempted to undo with empty board history'
-        # assert self.eval_history, 'Attempted to undo with empty eval history'
+        assert self.eval_history, 'Attempted to undo with empty eval history'
         hist = self.board_history.pop()
-        # self.white_score, self.black_score = self.eval_history.pop()
+        self.white_score, self.black_score = self.eval_history.pop()
         if self.playing == 'W':
             self.playing = 'B'
             self.turn -= 1
