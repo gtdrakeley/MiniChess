@@ -507,7 +507,7 @@ class ChessAIV2:
                 temp_best = None
                 alpha = -ChessAIV2.eval_bound
                 beta = ChessAIV2.eval_bound
-                iter_depth = 2
+                iter_depth = 1
                 while True:
                     for mv in self.moves_evaluated():
                         self.move(mv)
