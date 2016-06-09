@@ -116,14 +116,6 @@ class ChessAIV2:
     def __init__(self):
         self.turn = 1
         self.playing = 'W'
-        """
-        self.board = [list('kqbnr'),
-                      list('ppppp'),
-                      list('.....'),
-                      list('.....'),
-                      list('PPPPP'),
-                      list('RNBQK')]
-        """
         self.board = [list('kqbnr'),
                       list('ppppp'),
                       list('.....'),
@@ -427,10 +419,9 @@ class ChessAIV2:
         self.move(mv)
         return str(mv)
 
-
     def move_negamax(self, depth: int, duration: int) -> str:
         best = None
-        score = self.eval_bound
+        score = -self.eval_bound
         for mv in self.moves_shuffled():
             self.move(mv)
             temp = -self.negamax(depth-1, duration)
