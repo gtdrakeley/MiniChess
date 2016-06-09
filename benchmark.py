@@ -13,7 +13,7 @@ import cai
 ai = cai.AI()
 '''
 setup3 = '''
-import inline
+import chess
 '''
 setup4 = '''
 import chessaiv2
