@@ -138,7 +138,7 @@ class ChessAIV2:
         self.goal_depth = 0
         self.recur_calls = 0
         self.start_time = 0
-        self.move_duration = 0
+        self.move_duration = -1
         self.evaluate_board()
 
     def reset(self) -> None:
@@ -509,12 +509,12 @@ class ChessAIV2:
                 beta = ChessAIV2.eval_bound
                 iter_depth = 2
                 while True:
-                    for move in self.moves_evaluated():
-                        self.move(move)
+                    for mv in self.moves_evaluated():
+                        self.move(mv)
                         temp = -self.alphabeta(iter_depth - 1, self.move_duration, -beta, -alpha)
                         self.undo()
                         if temp > alpha:
-                            temp_best = move
+                            temp_best = mv
                             alpha = temp
                     best = temp_best
                     iter_depth += 1
@@ -535,12 +535,12 @@ class ChessAIV2:
             alpha = -ChessAIV2.eval_bound
             beta = ChessAIV2.eval_bound
             temp = 0
-            for move in self.moves_evaluated():
-                self.move(move)
+            for mv in self.moves_evaluated():
+                self.move(mv)
                 temp = -self.alphabeta(depth - 1, 0, -beta, -alpha)
                 self.undo()
                 if temp > alpha:
-                    best = move
+                    best = mv
                     alpha = temp
             self.move(best)
             return str(best)
@@ -578,8 +578,8 @@ class ChessAIV2:
         if depth == 0 or self.winner() != '?':
             return self.evaluation()
         score = -ChessAIV2.eval_bound
-        for move in self.moves_evaluated():
-            self.move(move)
+        for mv in self.moves_evaluated():
+            self.move(mv)
             score = max(score, -self.alphabeta(depth - 1, duration, -beta, -alpha))
             self.undo()
             alpha = max(alpha, score)
