@@ -20,7 +20,7 @@ if random() <= 0.5:
         print(ai.board_get()[:-1])
         start = chess.milliseconds()
         ai.move_alphabeta(-1, p1_time)
-        p1_time -= chess.milliseconds() - start
+        delta = chess.milliseconds() - start
         print('W Remaining Time: {}'.format(p1_time))
         if p1_time < 0:
             print('B-ChessAIV2 wins via time!')
@@ -31,13 +31,14 @@ if random() <= 0.5:
         elif ai.winner() != '?':
             print('W-ChessAI wins by taking the king!')
             break
+        p1_time -= delta
         ai2.set_board(ai.board_get())
         print()
         print()
         print(ai2.get_board()[:-1])
         start = chess.milliseconds()
         ai2.move_alphabeta(-1, p2_time)
-        p2_time -= chess.milliseconds() - start
+        delta = chess.milliseconds() - start
         print('B Remaining Time: {}'.format(p2_time))
         if p2_time < 0:
             print('W-ChessAI wins via time!')
@@ -48,6 +49,7 @@ if random() <= 0.5:
         elif ai2.winner() != '?':
             print('B-ChessAIV2 wins by taking the king!')
             break
+        p2_time -= delta
         ai.board_set(ai2.get_board())
 else:
     print('ChessAIV2 is W')
@@ -60,7 +62,7 @@ else:
         print(ai2.get_board()[:-1])
         start = chess.milliseconds()
         ai2.move_alphabeta(-1, p2_time)
-        p2_time -= chess.milliseconds() - start
+        delta= chess.milliseconds() - start
         print('W Remaining Time: {}'.format(p2_time))
         if p2_time < 0:
             print('B-ChessAI wins via time!')
@@ -71,13 +73,14 @@ else:
         elif ai2.winner() != '?':
             print('W-Inline wins by taking the king!')
             break
+        p2_time -= delta
         ai.board_set(ai2.get_board())
         print()
         print()
         print(ai.board_get()[:-1])
         start = chess.milliseconds()
         ai.move_alphabeta(-1, p1_time)
-        p1_time -= chess.milliseconds() - start
+        delta = chess.milliseconds() - start
         print('B Remaining Time: {}'.format(p1_time))
         if p1_time < 0:
             print('W-Inline wins via time!')
@@ -88,6 +91,7 @@ else:
         elif ai.winner() != '?':
             print('B-ChessAI wins by taking the king!')
             break
+        p1_time -= delta
         ai2.set_board(ai.board_get())
 """
 if random() <= 0.5:
