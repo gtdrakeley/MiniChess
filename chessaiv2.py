@@ -485,17 +485,15 @@ class ChessAIV2:
                 if temp > alpha:
                     best = mv
                     alpha = temp
-        self.recur_calls = 0
         self.move(best)
         return str(best)
 
     def alphabeta(self, depth: int, duration: int, alpha: int, beta: int) -> int:
         self.recur_calls += 1
         if duration > 0 and self.recur_calls > 20000:
+            self.recur_calls = 0
             if milliseconds()-self.start_time >= duration:
                 raise TimeoutError(depth)
-            else:
-                self.recur_calls = 0
         if depth == 0 or self.winner() != '?':
             return self.evaluation()
         score = -self.eval_bound
