@@ -8,6 +8,8 @@ from sys import argv
 p1_time = p2_time = int(argv[1])
 ai = chessai.ChessAI()
 ai2 = chessaiv2.ChessAIV2()
+p1_depths = list()
+p2_depths = list()
 
 if random() <= 0.5:
     print('ChessAI is W')
@@ -19,7 +21,7 @@ if random() <= 0.5:
         print()
         print(ai.get_board()[:-1])
         start = chess.milliseconds()
-        ai.move_alphabeta(-1, p1_time)
+        p1_depths.append(ai.move_alphabeta(-1, p1_time)[0])
         delta = chess.milliseconds() - start
         if p1_time < 0:
             print('B-ChessAIV2 wins via time!')
@@ -38,7 +40,7 @@ if random() <= 0.5:
         print()
         print(ai2.get_board()[:-1])
         start = chess.milliseconds()
-        ai2.move_alphabeta(-1, p2_time)
+        p2_depths.append(ai2.move_alphabeta(-1, p2_time)[0])
         delta = chess.milliseconds() - start
         if p2_time < 0:
             print('W-ChessAI wins via time!')
@@ -63,7 +65,7 @@ else:
         print()
         print(ai2.get_board()[:-1])
         start = chess.milliseconds()
-        ai2.move_alphabeta(-1, p2_time)
+        p1_depths.append(ai2.move_alphabeta(-1, p2_time)[0])
         delta = chess.milliseconds() - start
         if p2_time < 0:
             print('B-ChessAI wins via time!')
@@ -82,7 +84,7 @@ else:
         print()
         print(ai.get_board()[:-1])
         start = chess.milliseconds()
-        ai.move_alphabeta(-1, p1_time)
+        p2_depths.append(ai.move_alphabeta(-1, p1_time)[0])
         delta = chess.milliseconds() - start
         if p1_time < 0:
             print('W-Inline wins via time!')
@@ -180,3 +182,5 @@ print()
 print('W Time Remaining: {}'.format(p1_time))
 print('B Time Remaining: {}'.format(p2_time))
 print('Difference (W minus B): {}'.format(p1_time-p2_time))
+print('W Average Depth: {}'.format(sum(p1_depths) / len(p1_depths)))
+print('B Average Depth: {}'.format(sum(p2_depths) / len(p2_depths)))

@@ -449,7 +449,7 @@ class ChessAIV2:
             self.undo()
         return score
 
-    def move_alphabeta(self, depth: int, duration: int) -> str:
+    def move_alphabeta(self, depth: int, duration: int) -> Tuple[int, str]:
         best = None
         alpha = -self.eval_bound
         beta = self.eval_bound
@@ -477,6 +477,9 @@ class ChessAIV2:
                 print(move_duration)
                 for _ in range(iter_depth-e.args[0]):
                     self.undo()
+                self.recur_calls = 0
+                self.move(best)
+                return self.goal_depth-1, str(best)
         else:
             for mv in self.moves_evaluated():
                 self.move(mv)
@@ -485,8 +488,9 @@ class ChessAIV2:
                 if temp > alpha:
                     best = mv
                     alpha = temp
-        self.move(best)
-        return str(best)
+                self.move(best)
+                return depth, str(best)
+        return 0, ''
 
     def alphabeta(self, depth: int, duration: int, alpha: int, beta: int) -> int:
         self.recur_calls += 1

@@ -499,6 +499,9 @@ class ChessAI:
                     self.undo()
                 self.move_duration = -1
                 self.start_time = 0
+                self.recur_calls = 0
+                self.move(best)
+                return iter_depth-1, str(best)
         else:
             best = None
             alpha = -ChessAI.max_score
@@ -511,9 +514,9 @@ class ChessAI:
                 if temp > alpha:
                     best = move
                     alpha = temp
-        self.move(best)
-        self.recur_calls = 0
-        return str(best)
+            self.move(best)
+            return str(best)
+        return 0, ''
 
     def alphabeta(self, depth: int, duration: int, alpha: int, beta: int):
         self.recur_calls += 1
