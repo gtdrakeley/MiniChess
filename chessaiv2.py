@@ -116,12 +116,21 @@ class ChessAIV2:
     def __init__(self):
         self.turn = 1
         self.playing = 'W'
-        self.board = [list('kqbnr'),
-                      list('ppppp'),
-                      list('.....'),
-                      list('.....'),
-                      list('PPPPP'),
-                      list('RNBQK')]
+        self.board = list()  # type: List[List[str]]
+        self.board.extend([list('kqbnr'),
+                           list('ppppp'),
+                           list('.....'),
+                           list('.....'),
+                           list('PPPPP'),
+                           list('RNBQK')])
+        """
+        self.board = list([list('kqbnr'),  # type: List[List[str]]
+                           list('ppppp'),
+                           list('.....'),
+                           list('.....'),
+                           list('PPPPP'),
+                           list('RNBQK')])
+        """
         self.white_score = 0
         self.black_score = 0
         self.board_history = list()  # type: List[History]
@@ -234,7 +243,6 @@ class ChessAIV2:
             return False
 
     def is_own(self, piece: str) -> bool:
-        global playing, white_pieces, black_pieces
         if self.playing == 'W' and piece in ChessAIV2.white_pieces:
             return True
         elif self.playing == 'B' and piece in ChessAIV2.black_pieces:
@@ -330,7 +338,6 @@ class ChessAIV2:
         return mvs
 
     def bishop_moves(self, r: int, c: int) -> List[Move]:
-        global board
         mvs = list()
         if ChessAIV2.is_valid(r-1, c) and ChessAIV2.is_nothing(self.board[r-1][c]):
             mvs.append(Move(r, c, r-1, c))
