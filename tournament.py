@@ -62,7 +62,7 @@ else:
         print(ai2.get_board()[:-1])
         start = chess.milliseconds()
         ai2.move_alphabeta(-1, p2_time)
-        delta= chess.milliseconds() - start
+        delta = chess.milliseconds() - start
         print('W Remaining Time: {}'.format(p2_time))
         if p2_time < 0:
             print('B-ChessAI wins via time!')
@@ -75,6 +75,7 @@ else:
             break
         p2_time -= delta
         ai.board_set(ai2.get_board())
+        assert ai.eval() == ai2.evaluation(), 'Eval mismatch - AI: {} vs AI2: {}'.format(ai.eval(), ai2.evaluation())
         print()
         print()
         print(ai.board_get()[:-1])
@@ -93,6 +94,7 @@ else:
             break
         p1_time -= delta
         ai2.set_board(ai.board_get())
+        assert ai.eval() == ai2.evaluation(), 'Eval mismatch - AI: {} vs AI2: {}'.format(ai.eval(), ai2.evaluation())
 """
 if random() <= 0.5:
     print('ChessAI is W')
