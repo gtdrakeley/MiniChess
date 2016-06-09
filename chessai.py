@@ -106,10 +106,10 @@ class ChessAI:
                       bytearray(b'PPPPP'),
                       bytearray(b'RNBQK')]
 
-    def board_get(self):
+    def get_board(self):
         return '{} {}\n{}\n'.format(self.turn, self.playing, '\n'.join(map(bytearray.decode, self.board)))
 
-    def board_set(self, board_str):
+    def set_board(self, board_str):
         turn_state, *board_state = board_str.split('\n')
         turn, playing = turn_state.split()
         self.turn, self.playing = int(turn), playing
