@@ -179,16 +179,16 @@ class ChessAIV2:
     def move(self, mv: Move) -> None:
         # Save board state
         self.board_history.append(History(self.board, mv))
-        self.eval_history.append((self.white_score, self.black_score))
+        """self.eval_history.append((self.white_score, self.black_score))"""
         # Begin updating evaluation
-        src_piece = self.board[mv.src_row][mv.src_column]
+        """src_piece = self.board[mv.src_row][mv.src_column]
         dest_piece = self.board[mv.dest_row][mv.dest_column]
         if src_piece in ChessAIV2.white_pieces:
             self.white_score -= ChessAIV2.piece_position_values[src_piece][mv.src_row][mv.src_column]
             self.black_score -= ChessAIV2.piece_position_values[dest_piece][5-mv.dest_row][4-mv.dest_column]
         else:
             self.white_score -= ChessAIV2.piece_position_values[dest_piece][mv.dest_row][mv.dest_column]
-            self.black_score -= ChessAIV2.piece_position_values[src_piece][5-mv.src_row][4-mv.src_column]
+            self.black_score -= ChessAIV2.piece_position_values[src_piece][5-mv.src_row][4-mv.src_column]"""
         # Perform the move
         if self.playing == 'W':
             self.playing = 'B'
@@ -203,18 +203,19 @@ class ChessAIV2:
             self.board[mv.dest_row][mv.dest_column] = 'q'
         else:
             self.board[mv.dest_row][mv.dest_column] = src_piece
+        self.evaluate_board()
         # End updating evaluation
-        src_piece = self.board[mv.dest_row][mv.dest_column]
+        """src_piece = self.board[mv.dest_row][mv.dest_column]
         if src_piece in ChessAIV2.white_pieces:
             self.white_score += ChessAIV2.piece_position_values[src_piece][mv.dest_row][mv.dest_column]
         else:
-            self.black_score += ChessAIV2.piece_position_values[src_piece][5-mv.dest_row][4-mv.dest_column]
+            self.black_score += ChessAIV2.piece_position_values[src_piece][5-mv.dest_row][4-mv.dest_column]"""
 
     def undo(self) -> None:
         assert self.board_history, 'Attempted to undo with empty board history'
-        assert self.eval_history, 'Attempted to undo with empty eval history'
+        # assert self.eval_history, 'Attempted to undo with empty eval history'
         hist = self.board_history.pop()
-        self.white_score, self.black_score = self.eval_history.pop()
+        # self.white_score, self.black_score = self.eval_history.pop()
         if self.playing == 'W':
             self.playing = 'B'
             self.turn -= 1
