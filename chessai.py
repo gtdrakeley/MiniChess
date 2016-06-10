@@ -490,6 +490,8 @@ class ChessAI:
                             alpha = temp
                     best = temp_best
                     iter_depth += 1
+                    alpha = -ChessAI.max_score
+                    beta = ChessAI.max_score
                     if iter_depth > 64:
                         raise TimeoutError(iter_depth)
             except TimeoutError as e:

@@ -501,6 +501,7 @@ def move_alphabeta(depth, duration) -> str:
     if depth < 0:
         temp_mv = None
         iter_depth = 1
+        max_depth = 80-(turn+turn-(2 if playing == 'W' else 1))
         move_duration = (duration - 1500) / (41 - turn)
         start_time = milliseconds()
         try:
@@ -515,7 +516,7 @@ def move_alphabeta(depth, duration) -> str:
                         alpha = temp
                 best = temp_mv
                 iter_depth += 1
-                if iter_depth > 80-(turn*2-(2 if playing == 'W' else 1)):
+                if iter_depth > max_depth:
                     raise TimeoutError(iter_depth)
         except TimeoutError as e:
             print(iter_depth-1)
