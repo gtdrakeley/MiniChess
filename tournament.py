@@ -141,7 +141,7 @@ if random() <= 0.5:
             break
         ai.set_board(chess.get_board())
 else:
-    print('Inline is W')
+    print('Chess is W')
     print()
     print()
     print()
