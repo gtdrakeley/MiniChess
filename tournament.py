@@ -112,7 +112,7 @@ if random() <= 0.5:
         print()
         print(ai.get_board()[:-1])
         start = chess.milliseconds()
-        ai.move_alphabeta(-1, p1_time)
+        p1_depths.append(ai.move_alphabeta(-1, p1_time)[0])
         p1_time -= chess.milliseconds() - start
         if p1_time < 0:
             print('B-Chess wins via time!')
@@ -128,7 +128,7 @@ if random() <= 0.5:
         print()
         print(chess.get_board()[:-1])
         start = chess.milliseconds()
-        chess.move_alphabeta(-1, p2_time)
+        p2_depths.append(chess.move_alphabeta(-1, p2_time)[0])
         p2_time -= chess.milliseconds() - start
         if p2_time < 0:
             print('W-ChessAI wins via time!')
@@ -150,7 +150,7 @@ else:
         print()
         print(chess.get_board()[:-1])
         start = chess.milliseconds()
-        chess.move_alphabeta(-1, p2_time)
+        p1_depths.append(chess.move_alphabeta(-1, p2_time)[0])
         p2_time -= chess.milliseconds() - start
         if p2_time < 0:
             print('B-ChessAI wins via time!')
@@ -166,7 +166,7 @@ else:
         print()
         print(ai.get_board()[:-1])
         start = chess.milliseconds()
-        ai.move_alphabeta(-1, p1_time)
+        p2_depths.append(ai.move_alphabeta(-1, p1_time)[0])
         p1_time -= chess.milliseconds() - start
         if p1_time < 0:
             print('W-Chess wins via time!')
