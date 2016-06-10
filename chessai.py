@@ -480,6 +480,7 @@ class ChessAI:
                 alpha = -ChessAI.max_score
                 beta = ChessAI.max_score
                 iter_depth = 2
+                max_depth = 80 - (self.turn + self.turn - (2 if self.playing == 'W' else 1))
                 while True:
                     for move in self.moves_evaluated():
                         self.move(move)
@@ -492,7 +493,7 @@ class ChessAI:
                     iter_depth += 1
                     alpha = -ChessAI.max_score
                     beta = ChessAI.max_score
-                    if iter_depth > 64:
+                    if iter_depth > max_depth:
                         raise TimeoutError(iter_depth)
             except TimeoutError as e:
                 print(iter_depth - 1)
