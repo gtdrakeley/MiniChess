@@ -11,7 +11,7 @@ ai2 = chessaiv2.ChessAIV2()
 p1_depths = list()
 p2_depths = list()
 
-"""
+# """
 if random() <= 0.5:
     print('ChessAI is W')
     print()
@@ -101,7 +101,7 @@ else:
         ai2.set_board(ai.get_board())
         assert ai.eval() == ai2.evaluation(), 'Eval mismatch - AI: {} vs AI2: {}'.format(ai.eval(), ai2.evaluation())
 # """
-# """
+"""
 if random() <= 0.5:
     print('ChessAI is W')
     print()
