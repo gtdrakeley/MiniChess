@@ -535,7 +535,7 @@ def move_alphabeta(depth, duration) -> str:
                 alpha = temp
     recur_calls = 0
     move(best)
-    return str(best)
+    return (depth if depth > 0 else goal_depth-1), str(best)
 
 
 def alphabeta(depth, duration, alpha: int, beta: int) -> int:
