@@ -238,13 +238,13 @@ class ChessAIV2:
         src_piece = self.board[mv.src_row][mv.src_column]
         dest_piece = self.board[mv.dest_row][mv.dest_column]
         if src_piece in ChessAIV2.white_pieces:
-            white_score -= (ChessAIV2.piece_position_values[src_piece][mv.src_row][mv.src_column] -
-                            ChessAIV2.piece_position_values[src_piece][mv.dest_row][mv.dest_column])
+            white_score -= ChessAIV2.piece_position_values[src_piece][mv.src_row][mv.src_column]
+            white_score += ChessAIV2.piece_position_values[src_piece][mv.dest_row][mv.dest_column]
             black_score -= ChessAIV2.piece_position_values[dest_piece][5 - mv.dest_row][4 - mv.dest_column]
         else:
             white_score -= ChessAIV2.piece_position_values[dest_piece][mv.dest_row][mv.dest_column]
-            black_score -= (ChessAIV2.piece_position_values[src_piece][5 - mv.src_row][4 - mv.src_column] -
-                            ChessAIV2.piece_position_values[src_piece][5 - mv.dest_row][4 - mv.dest_column])
+            black_score -= ChessAIV2.piece_position_values[src_piece][5 - mv.src_row][4 - mv.src_column]
+            black_score += ChessAIV2.piece_position_values[src_piece][5 - mv.dest_row][4 - mv.dest_column]
         return white_score - black_score if self.playing == 'W' else black_score - white_score
 
     def move(self, mv: Move) -> None:
@@ -257,11 +257,12 @@ class ChessAIV2:
         if src_piece in ChessAIV2.white_pieces:
             self.white_score -= (ChessAIV2.piece_position_values[src_piece][mv.src_row][mv.src_column] -
                                  ChessAIV2.piece_position_values[src_piece][mv.dest_row][mv.dest_column])
+            self.white_score += ChessAIV2.piece_position_values[src_piece][mv.dest_row][mv.dest_column]
             self.black_score -= ChessAIV2.piece_position_values[dest_piece][5-mv.dest_row][4-mv.dest_column]
         else:
             self.white_score -= ChessAIV2.piece_position_values[dest_piece][mv.dest_row][mv.dest_column]
-            self.black_score -= (ChessAIV2.piece_position_values[src_piece][5-mv.src_row][4-mv.src_column] -
-                                 ChessAIV2.piece_position_values[src_piece][5-mv.dest_row][4-mv.dest_column])
+            self.black_score -= ChessAIV2.piece_position_values[src_piece][5-mv.src_row][4-mv.src_column]
+            self.black_score += ChessAIV2.piece_position_values[src_piece][5-mv.dest_row][4-mv.src_row]
         # Perform the move
         if self.playing == 'W':
             self.playing = 'B'
