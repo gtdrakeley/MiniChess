@@ -255,8 +255,7 @@ class ChessAIV2:
         src_piece = self.board[mv.src_row][mv.src_column]
         dest_piece = self.board[mv.dest_row][mv.dest_column]
         if src_piece in ChessAIV2.white_pieces:
-            self.white_score -= (ChessAIV2.piece_position_values[src_piece][mv.src_row][mv.src_column] -
-                                 ChessAIV2.piece_position_values[src_piece][mv.dest_row][mv.dest_column])
+            self.white_score -= ChessAIV2.piece_position_values[src_piece][mv.src_row][mv.src_column]
             self.white_score += ChessAIV2.piece_position_values[src_piece][mv.dest_row][mv.dest_column]
             self.black_score -= ChessAIV2.piece_position_values[dest_piece][5-mv.dest_row][4-mv.dest_column]
         else:
