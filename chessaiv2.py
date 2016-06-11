@@ -232,7 +232,7 @@ class ChessAIV2:
                     self.white_score += ChessAIV2.piece_position_values[piece][r][c]
                 elif piece in ChessAIV2.black_pieces:
                     self.black_score += ChessAIV2.piece_position_values[piece][5-r][4-c]
-
+    """
     def evaluate_move(self, mv: Move) -> int:
         white_score, black_score = self.white_score, self.black_score
         src_piece = self.board[mv.src_row][mv.src_column]
@@ -246,6 +246,7 @@ class ChessAIV2:
             black_score -= ChessAIV2.piece_position_values[src_piece][5 - mv.src_row][4 - mv.src_column]
             black_score += ChessAIV2.piece_position_values[src_piece][5 - mv.dest_row][4 - mv.dest_column]
         return white_score - black_score if self.playing == 'W' else black_score - white_score
+    # """
 
     def move(self, mv: Move) -> None:
         # Save board state
@@ -256,11 +257,11 @@ class ChessAIV2:
         dest_piece = self.board[mv.dest_row][mv.dest_column]
         if src_piece in ChessAIV2.white_pieces:
             self.white_score -= ChessAIV2.piece_position_values[src_piece][mv.src_row][mv.src_column]
-            self.white_score += ChessAIV2.piece_position_values[src_piece][mv.dest_row][mv.dest_column]
+            # self.white_score += ChessAIV2.piece_position_values[src_piece][mv.dest_row][mv.dest_column]
             self.black_score -= ChessAIV2.piece_position_values[dest_piece][5-mv.dest_row][4-mv.dest_column]
         else:
             self.white_score -= ChessAIV2.piece_position_values[dest_piece][mv.dest_row][mv.dest_column]
-            self.black_score -= ChessAIV2.piece_position_values[src_piece][5-mv.src_row][4-mv.src_column]
+            # self.black_score -= ChessAIV2.piece_position_values[src_piece][5-mv.src_row][4-mv.src_column]
             self.black_score += ChessAIV2.piece_position_values[src_piece][5-mv.dest_row][4-mv.src_row]
         # Perform the move
         if self.playing == 'W':
@@ -277,14 +278,14 @@ class ChessAIV2:
         else:
             self.board[mv.dest_row][mv.dest_column] = src_piece
         # self.evaluate_board()
-        """
+        # """
         # End updating evaluation
         src_piece = self.board[mv.dest_row][mv.dest_column]
         if src_piece in ChessAIV2.white_pieces:
             self.white_score += ChessAIV2.piece_position_values[src_piece][mv.dest_row][mv.dest_column]
         else:
             self.black_score += ChessAIV2.piece_position_values[src_piece][5-mv.dest_row][4-mv.dest_column]
-        """
+        # """
 
     def undo(self) -> None:
         assert self.board_history, 'Attempted to undo with empty board history'
@@ -484,10 +485,10 @@ class ChessAIV2:
         mvs = self.moves_shuffled()
         evals = list()  # type: List[int]
         for mv in mvs:
-            evals.append(self.evaluate_move(mv))
-            # self.move(mv)
-            # evals.append(self.evaluation())
-            # self.undo()
+            # evals.append(self.evaluate_move(mv))
+            self.move(mv)
+            evals.append(self.evaluation())
+            self.undo()
         zipped = list(zip(evals, mvs))
         zipped.sort(key=lambda e: e[0])
         evals, mvs = zip(*tuple(zipped))
