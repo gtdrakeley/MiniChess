@@ -1,6 +1,6 @@
 from move import Move
 from history import History
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 import time
 
 import random
@@ -8,6 +8,17 @@ import random
 
 def milliseconds() -> int:
     return int(round(time.time() * 1000))
+
+
+def generate_zobrist_hash(max_hash_value=0xFFFFFFFFFFFFFFFF) -> Dict[str, List[List[int]]]:
+    piece_hash_values = dict.fromkeys(list('KQBNRkqbnr'))  # type: Dict[str, List[List[int]]]
+    for key in piece_hash_values:
+        piece_hash_values[key] = list()
+        for row in range(6):
+            piece_hash_values[key].append(list())
+            for column in range(5):
+                piece_hash_values[key][row].append(random.randint(0, max_hash_value))
+    return piece_hash_values
 
 
 class ChessAIV2:
@@ -112,6 +123,7 @@ class ChessAIV2:
                   max(map(max, piece_position_values['B'])) +
                   max(map(max, piece_position_values['N'])) +
                   max(map(max, piece_position_values['R'])) + 1)
+    piece_hash_values = generate_zobrist_hash()
 
     def __init__(self):
         self.turn = 1
