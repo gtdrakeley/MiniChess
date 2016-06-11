@@ -261,8 +261,8 @@ class ChessAIV2:
             self.black_score -= ChessAIV2.piece_position_values[dest_piece][5-mv.dest_row][4-mv.dest_column]
         else:
             self.white_score -= ChessAIV2.piece_position_values[dest_piece][mv.dest_row][mv.dest_column]
-            # self.black_score -= ChessAIV2.piece_position_values[src_piece][5-mv.src_row][4-mv.src_column]
-            self.black_score += ChessAIV2.piece_position_values[src_piece][5-mv.dest_row][4-mv.src_row]
+            self.black_score -= ChessAIV2.piece_position_values[src_piece][5-mv.src_row][4-mv.src_column]
+            # self.black_score += ChessAIV2.piece_position_values[src_piece][5-mv.dest_row][4-mv.src_row]
         # Perform the move
         if self.playing == 'W':
             self.playing = 'B'
