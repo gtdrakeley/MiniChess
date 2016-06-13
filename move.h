@@ -3,16 +3,18 @@
 
 #include <stdio.h>
 
-extern char* MOVE_TO_STR[];
+extern char* MOVE_CONV[];
 
-#define moveCreate(SRC, DEST) (SRC | (DEST << 5))
+#define MOVE_GEN(SRC, DEST) (SRC | (DEST << 5))
 
-#define moveSrc(MV) (MV & 0x1f)
+#define MOVE_SRC(MV) (MV & 0x1f)
 
-#define moveDest(MV) ((MV >> 5) & 0x1f)
+#define MOVE_DEST(MV) ((MV >> 5) & 0x1f)
 
-#define moveStr(OUT, MV) sprintf(OUT, "%s-%s\n", MOVE_TO_STR[moveSrc(MV)], MOVE_TO_STR[moveDest(MV)])
+#define MOVE_TO_STR(OUT, MV) sprintf(OUT, "%s-%s\n", MOVE_CONV[MOVE_SRC(MV)], MOVE_CONV[MOVE_DEST(MV)])
 
-// int moveStr(char* out, int mv);
+#define STR_TO_MOVE(STR) Move_fromStr(STR)
+
+int		Move_fromStr(char* str);
 
 #endif

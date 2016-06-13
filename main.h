@@ -14,7 +14,9 @@
 #include "cjson.h"
 #include <zmq.h> // sudo apt-get install libzmq3-dev
 
-#include "chess.h"
+// #include "chess.h"
+#include "chessai.h"
+#include "finterface.h"
 #include "zeromq.h"
 #include "move.h"
 
