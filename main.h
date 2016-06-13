@@ -24,27 +24,27 @@ extern int main_intZeromq;
 extern char* main_charName;
 
 static inline int minimum(int intA, int intB) {
-	if (intA < intB) {
-		return intA;
-	}
-	
-	return intB;
+    if (intA < intB) {
+        return intA;
+    }
+    
+    return intB;
 }
 
 static inline int maximum(int intA, int intB) {
-	if (intA > intB) {
-		return intA;
-	}
-	
-	return intB;
+    if (intA > intB) {
+        return intA;
+    }
+    
+    return intB;
 }
 
 static inline unsigned long long milliseconds() {
-	struct timeval timevalHandle = { };
-	
-	gettimeofday(&timevalHandle, NULL);
-	
-	return (timevalHandle.tv_sec * 1000) + (timevalHandle.tv_usec / 1000);
+    struct timeval timevalHandle = { };
+    
+    gettimeofday(&timevalHandle, NULL);
+    
+    return (timevalHandle.tv_sec * 1000) + (timevalHandle.tv_usec / 1000);
 }
 
 #endif

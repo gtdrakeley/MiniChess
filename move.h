@@ -15,6 +15,6 @@ extern char* MOVE_CONV[];
 
 #define STR_TO_MOVE(STR) Move_fromStr(STR)
 
-int		Move_fromStr(char* str);
+int     Move_fromStr(char* str);
 
 #endif
