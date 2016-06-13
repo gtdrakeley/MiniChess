@@ -22,6 +22,12 @@ void zeromq_start() {
 		}
 		
 		{
+			chess_reset();
+			char str[7] = {'\0'};
+			printf("%s", MOVE_TO_STR[30]);
+			moveStr(str, moveCreate(0, 30));
+			printf("%s", str);
+
 			do {
 				cJSON* cjsonIn = NULL;
 				cJSON* cjsonOut = cJSON_CreateObject();
@@ -66,7 +72,7 @@ void zeromq_start() {
 						cJSON_AddStringToObject(cjsonOut, "strReturn", charReturn);
 						
 					} else if (strcmp(cJSON_GetObjectItem(cjsonIn, "strFunction")->valuestring, "chess_isValid") == 0) {
-						cJSON_AddBoolToObject(cjsonOut, "boolReturn", chess_isValid(cJSON_GetObjectItem(cjsonIn, "intX")->valueint, cJSON_GetObjectItem(cjsonIn, "intY")->valueint));
+						cJSON_AddBoolToObject(cjsonOut, "boolReturn", chess_isValid(cJSON_GetObjectItem(cjsonIn, "intY")->valueint, cJSON_GetObjectItem(cjsonIn, "intX")->valueint));
 						
 					} else if (strcmp(cJSON_GetObjectItem(cjsonIn, "strFunction")->valuestring, "chess_isEnemy") == 0) {
 						char charIn[16] = { };

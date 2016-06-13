@@ -1,7 +1,7 @@
 #include "main.h"
 
 int main_intZeromq = 54361; // CHANGE THIS - OPTIONAL
-char* main_charName = "YOUR NAME"; // CHANGE THIS - REQUIRED
+char* main_charName = "Chessticules"; // CHANGE THIS - REQUIRED
 
 void main_sigint() {
 	{

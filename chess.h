@@ -10,6 +10,7 @@ bool chess_isEnemy(char charPiece);
 bool chess_isOwn(char charPiece);
 bool chess_isNothing(char charPiece);
 int chess_eval();
+void chess_evaluate_board();
 int chess_moves(char* charOut);
 int chess_movesShuffled(char* charOut);
 int chess_movesEvaluated(char* charOut);

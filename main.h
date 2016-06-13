@@ -16,6 +16,7 @@
 
 #include "chess.h"
 #include "zeromq.h"
+#include "move.h"
 
 extern int main_intZeromq;
 extern char* main_charName;
