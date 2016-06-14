@@ -1,2 +1,2 @@
 all:
-	gcc -std=c99 chessai.c cjson.c main.c zeromq.c move.c finterface.c -o client -lm -lzmq
+	gcc -std=c99 -Wall chessai.c cjson.c main.c zeromq.c move.c finterface.c -o client -lm -lzmq

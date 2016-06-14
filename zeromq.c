@@ -100,7 +100,7 @@ void zeromq_start() {
                         strcpy(charIn, cJSON_GetObjectItem(cjsonIn, "strPiece")->valuestring);
                         
                         // cJSON_AddBoolToObject(cjsonOut, "boolReturn", chess_isNothing(charIn[0]));
-                        cJSON_AddBoolToObject(cjsonOut, "boolReturn", frameworkInterface_isNothing(charIn[0]));
+                        cJSON_AddBoolToObject(cjsonOut, "boolReturn", frameworkInterface_isNothing(&ai, charIn[0]));
                         
                     } else if (strcmp(cJSON_GetObjectItem(cjsonIn, "strFunction")->valuestring, "chess_eval") == 0) {
                         // cJSON_AddNumberToObject(cjsonOut, "intReturn", chess_eval());
@@ -196,6 +196,8 @@ void zeromq_start() {
                 cJSON_Delete(cjsonIn);
                 cJSON_Delete(cjsonOut);
             } while (zeromq_boolRunning == true);
+
+            // ChessAI_destroy(&ai);
         }
         
         zmq_close(socketHandle);

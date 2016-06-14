@@ -25,20 +25,38 @@ char    frameworkInterface_winner(ChessAI* ai) {
     return ChessAI_winner(ai); 
 }
 
-bool    frameworkInterface_isValid(int row, int column) {
-    return isValid(row*5+column);
+bool    frameworkInterface_isValid(int row, int col) {
+    return isValid(row, col);
 }
 
 bool    frameworkInterface_isEnemy(ChessAI* ai, char piece) {
-    return ChessAI_isEnemy(ai, piece);
+    ChessAI temp;
+    ChessAI_init(&temp);
+    ChessAI_sync(ai, &temp);
+    temp.board[0] = piece;
+    bool ret = ChessAI_isEnemy(&temp, 0, 0);
+    ChessAI_destroy(&temp);
+    return ret;
 }
 
 bool    frameworkInterface_isOwn(ChessAI* ai, char piece) {
-    return ChessAI_isOwn(ai, piece);
+    ChessAI temp;
+    ChessAI_init(&temp);
+    ChessAI_sync(ai, &temp);
+    temp.board[0] = piece;
+    bool ret = ChessAI_isOwn(&temp, 0, 0);
+    ChessAI_destroy(&temp);
+    return ret;
 }
 
-bool    frameworkInterface_isNothing(char piece) {
-    return isNothing(piece);
+bool    frameworkInterface_isNothing(ChessAI* ai, char piece) {
+    ChessAI temp;
+    ChessAI_init(&temp);
+    ChessAI_sync(ai, &temp);
+    temp.board[0] = piece;
+    bool ret = ChessAI_isNothing(&temp, 0, 0);
+    ChessAI_destroy(&temp);
+    return ret;
 }
 
 int     frameworkInterface_eval(ChessAI* ai) {
@@ -46,11 +64,14 @@ int     frameworkInterface_eval(ChessAI* ai) {
 }
 
 int     frameworkInterface_moves(ChessAI* ai, char* out) {
+    char* old_out = out;
     int moves[200] = {0};
     int count = ChessAI_moves(ai, moves);
     for (int i=0; i<count; ++i) {
+        printf("Move Num: %d\n", moves[i]);
         out += MOVE_TO_STR(out, moves[i]);
     }
+    printf("Moves: %s\n", old_out);
     return count;
 }
 
