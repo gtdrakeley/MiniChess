@@ -20,6 +20,8 @@
 #include "zeromq.h"
 #include "move.h"
 
+#define NDEBUG
+
 extern int main_intZeromq;
 extern char* main_charName;
 

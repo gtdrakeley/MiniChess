@@ -3,8 +3,11 @@
 
 #include <stdbool.h>
 
-// #define NDEBUG
+#include "history.h"
 
+
+/***********************  MACRO CONSTANTS  *****************************/
+#define HIST_SIZE 80
 
 
 /****************************  MACROS  *********************************/
@@ -20,14 +23,18 @@
 
 #define CHECK_BITS(VAR, NUM) (((VAR) ^ (~((~0) << (NUM)))) == 0)
 
+#define RAND_INT(MIN, MAX) ((rand() % ((MAX) - (MIN) + 1)) + (MIN))
+
 
 /****************************  STRUCTS  ********************************/
 typedef struct ChessAI {
-    int turn;
-    char playing;
     char* board;
+    History** history;
+    int turn;
     int white_score;
     int black_score;
+    int hidx;
+    char playing;
 } ChessAI;
 
 
@@ -38,6 +45,7 @@ void    ChessAI_destroy(ChessAI* self);
 
 /*****************************  METHODS  *******************************/
 void    ChessAI_sync(ChessAI* self, ChessAI* other);
+void    ChessAI_clearHistory(ChessAI* self);
 void    ChessAI_reset(ChessAI* self);
 void    ChessAI_getBoard(ChessAI* self, char* out);
 void    ChessAI_setBoard(ChessAI* self, char* in);

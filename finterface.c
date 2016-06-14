@@ -36,6 +36,7 @@ bool    frameworkInterface_isEnemy(ChessAI* ai, char piece) {
     temp.board[0] = piece;
     bool ret = ChessAI_isEnemy(&temp, 0, 0);
     ChessAI_destroy(&temp);
+    
     return ret;
 }
 
@@ -46,6 +47,7 @@ bool    frameworkInterface_isOwn(ChessAI* ai, char piece) {
     temp.board[0] = piece;
     bool ret = ChessAI_isOwn(&temp, 0, 0);
     ChessAI_destroy(&temp);
+    
     return ret;
 }
 
@@ -56,6 +58,7 @@ bool    frameworkInterface_isNothing(ChessAI* ai, char piece) {
     temp.board[0] = piece;
     bool ret = ChessAI_isNothing(&temp, 0, 0);
     ChessAI_destroy(&temp);
+    
     return ret;
 }
 
@@ -64,14 +67,12 @@ int     frameworkInterface_eval(ChessAI* ai) {
 }
 
 int     frameworkInterface_moves(ChessAI* ai, char* out) {
-    char* old_out = out;
     int moves[200] = {0};
     int count = ChessAI_moves(ai, moves);
     for (int i=0; i<count; ++i) {
-        printf("Move Num: %d\n", moves[i]);
         out += MOVE_TO_STR(out, moves[i]);
     }
-    printf("Moves: %s\n", old_out);
+    
     return count;
 }
 
@@ -81,6 +82,7 @@ int     frameworkInterface_movesShuffled(ChessAI* ai, char* out) {
     for (int i=0; i<count; ++i) {
         out += MOVE_TO_STR(out, moves[i]);
     }
+    
     return count;
 }
 
@@ -90,6 +92,7 @@ int     frameworkInterface_movesEvaluated(ChessAI* ai, char* out) {
     for (int i=0; i<count; ++i) {
         out += MOVE_TO_STR(out, moves[i]);
     }
+    
     return count;
 }
 

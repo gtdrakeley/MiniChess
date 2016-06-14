@@ -6,6 +6,7 @@
 
 #include "main.h"
 #include "move.h"
+#include "slavesort.h"
 #include "debug.h"
 
 
@@ -61,7 +62,7 @@ int     ROOK_POS_VALUES[] = {
 };
 
 int     PAWN_POS_VALUES[] = {
-    100, 100, 100, 100, 100,
+    2000, 2000, 2000, 2000, 2000,
     100, 100, 100, 100, 100,
     100, 100, 100, 100, 100,
     100, 100, 100, 100, 100,
@@ -73,18 +74,29 @@ int     PAWN_POS_VALUES[] = {
 
 /********************  CONSTRUCTORS/DESTRUCTOR  ************************/
 void    ChessAI_init(ChessAI* self) {
-    self->turn = 1;
-    self->playing = 'W';
     self->board = (char*)malloc(31*sizeof(char));
-    strcpy(self->board, "kwbnrppppp..........PPPPPRNBQK");
+    strcpy(self->board, "kqbnrppppp..........PPPPPRNBQK");
+    self->history = (History**)malloc(HIST_SIZE*sizeof(History*));
+    for (int i=0; i<HIST_SIZE; ++i) { self->history[i] = NULL; }
+    self->turn = 1;
     self->white_score = 0;
     self->black_score = 0;
+    self->hidx = 0;
+    self->playing = 'W';
 }
 
 
 void    ChessAI_destroy(ChessAI* self) {
     if (self->board) {
         free(self->board);
+    }
+    if (self->history) {
+        for (int i=0; i<HIST_SIZE; ++i) {
+            if (self->history[i]) {
+                free(self->history[i]);
+            } else { break; }
+        }
+        free(self->history);
     }
 }
 
@@ -99,11 +111,23 @@ void    ChessAI_sync(ChessAI* self, ChessAI* other) {
 }
 
 
+void    ChessAI_clearHistory(ChessAI* self) {
+    self->hidx = 0;
+    for (int i=0; i<HIST_SIZE; ++i) {
+        if (self->history[i]) {
+            free(self->history[i]);
+            self->history[i] = NULL;
+        } else { break; }
+    }
+}
+
+
 void    ChessAI_reset(ChessAI* self) {
     self->turn = 1;
     self->playing = 'W';
     strcpy(self->board, "kqbnrppppp..........PPPPPRNBQK");
     ChessAI_evalBoard(self);
+    ChessAI_clearHistory(self);
 }
 
 
@@ -127,6 +151,7 @@ void    ChessAI_setBoard(ChessAI* self, char* in) {
     self->turn = atoi(strtok(turn_state, " "));
     self->playing = strtok(NULL, " ")[0];
     ChessAI_evalBoard(self);
+    ChessAI_clearHistory(self);
 }
 
 
@@ -236,10 +261,134 @@ void    ChessAI_evalBoard(ChessAI* self) {
 
 
 void    ChessAI_move(ChessAI* self, int move) {
+    int src = MOVE_SRC(move);
+    int dest = MOVE_DEST(move);
+    char src_piece = self->board[src];
+    char dest_piece = self->board[dest];
+
+    debug("Preparing to allocate new history");
+    self->history[self->hidx] = (History*)malloc(sizeof(History));
+    debug("New history allocated at %p", self->history[self->hidx]);
+    History_init(self->history[(self->hidx)++], move, src_piece, dest_piece, self->white_score, self->black_score);
+    debug("History initialized");
+
+    if (src_piece <= 'R') {
+        switch (src_piece) {
+            case 'K':
+                self->white_score -= KING_POS_VALUES[src] - KING_POS_VALUES[dest];
+                break;
+            case 'Q':
+                self->white_score -= QUEEN_POS_VALUES[src] - QUEEN_POS_VALUES[dest];
+                break;
+            case 'B':
+                self->white_score -= BISHOP_POS_VALUES[src] - BISHOP_POS_VALUES[dest];
+                break;
+            case 'N':
+                self->white_score -= KNIGHT_POS_VALUES[src] - KNIGHT_POS_VALUES[dest];
+                break;
+            case 'R':
+                self->white_score -= ROOK_POS_VALUES[src] - ROOK_POS_VALUES[dest];
+                break;
+            case 'P':
+                self->white_score -= PAWN_POS_VALUES[src] - PAWN_POS_VALUES[dest];
+                break;
+        }
+        switch (dest_piece) {
+            case 'k':
+                self->black_score -= KING_POS_VALUES[29-dest];
+                break;
+            case 'q':
+                self->black_score -= QUEEN_POS_VALUES[29-dest];
+                break;
+            case 'b':
+                self->black_score -= BISHOP_POS_VALUES[29-dest];
+                break;
+            case 'n':
+                self->black_score -= KNIGHT_POS_VALUES[29-dest];
+                break;
+            case 'r':
+                self->black_score -= ROOK_POS_VALUES[29-dest];
+                break;
+            case 'p':
+                self->black_score -= PAWN_POS_VALUES[29-dest];
+                break;
+        }
+    } else {
+        switch (src_piece) {
+            case 'k':
+                self->black_score -= KING_POS_VALUES[29-src] - KING_POS_VALUES[29-dest];
+                break;
+            case 'q':
+                self->black_score -= QUEEN_POS_VALUES[29-src] - QUEEN_POS_VALUES[29-dest];
+                break;
+            case 'b':
+                self->black_score -= BISHOP_POS_VALUES[29-src] - BISHOP_POS_VALUES[29-dest];
+                break;
+            case 'n':
+                self->black_score -= KNIGHT_POS_VALUES[29-src] - KNIGHT_POS_VALUES[29-dest];
+                break;
+            case 'r':
+                self->black_score -= ROOK_POS_VALUES[29-src] - ROOK_POS_VALUES[29-dest];
+                break;
+            case 'p':
+                self->black_score -= PAWN_POS_VALUES[29-src] - PAWN_POS_VALUES[29-dest];
+                break;
+        }
+        switch (dest_piece) {
+            case 'K':
+                self->white_score -= KING_POS_VALUES[dest];
+                break;
+            case 'Q':
+                self->white_score -= QUEEN_POS_VALUES[dest];
+                break;
+            case 'B':
+                self->white_score -= BISHOP_POS_VALUES[dest];
+                break;
+            case 'N':
+                self->white_score -= KNIGHT_POS_VALUES[dest];
+                break;
+            case 'R':
+                self->white_score -= ROOK_POS_VALUES[dest];
+                break;
+            case 'P':
+                self->white_score -= PAWN_POS_VALUES[dest];
+                break;
+        }
+    }
+    
+    if (self->playing == 'W') {
+        self->playing = 'B';
+    } else {
+        self->playing = 'W';
+        (self->turn)++;
+    }
+    self->board[src] = '.';
+    if (src_piece == 'P' && dest <= 4) {
+        self->board[dest] = 'Q';
+    } else if (src_piece == 'p' && dest >= 25) {
+        self->board[dest] = 'q';
+    } else {
+        self->board[dest] = src_piece;
+    }
 }
 
 
 void    ChessAI_undo(ChessAI* self) {
+    History* hist = self->history[--(self->hidx)];
+    self->history[self->hidx] = NULL;
+
+    if (self->playing == 'W') {
+        self->playing = 'B';
+        (self->turn)--;
+    } else {
+        self->playing = 'W';
+    }
+    self->board[MOVE_SRC(hist->move)] = hist->src_piece;
+    self->board[MOVE_DEST(hist->move)] = hist->dest_piece;
+    self->white_score = hist->white_score;
+    self->black_score = hist->black_score;
+
+    free(hist);
 }
 
 
@@ -553,24 +702,53 @@ int     ChessAI_moves(ChessAI* self, int* out) {
         }
     }
 
-    /*
-    for (int i=0; i<200; ++i) {
-        printf("Move: %d\n", out[i]);
-        sleep(1);
-    }
-    */
-
     return (l_out - out);
 }
 
 
 int     ChessAI_movesShuffled(ChessAI* self, int* out) {
-    return 0;
+    int count = ChessAI_moves(self, out);
+    int r;
+
+    for (int i=count-1; i>0; --i) {
+        r = RAND_INT(0, i);
+        if (r == i) { continue; }
+        out[i] ^= out[r];
+        out[r] ^= out[i];
+        out[i] ^= out[r];
+
+    }
+
+    return count;
 }
 
 
 int     ChessAI_movesEvaluated(ChessAI* self, int* out) {
-    return 0;
+    int count = ChessAI_movesShuffled(self, out);
+    int* evals = (int*)malloc(count*sizeof(int));
+
+    for (int i=0; i<count; ++i) {
+        ChessAI_move(self, out[i]);
+        evals[i] = ChessAI_eval(self);
+        printf("Loaded evaluation: %d from %d\n", evals[i], ChessAI_eval(self));
+        ChessAI_undo(self);
+    }
+
+    printf("Presort\n");
+    for (int i=0; i<count; ++i) {
+        printf("Eval / Move --- %d / %d -> %d\n", evals[i], MOVE_SRC(out[i]), MOVE_DEST(out[i]));
+    }
+
+    slavesort(evals, out, count);
+    
+    printf("Postsort\n");
+    for (int i=0; i<count; ++i) {
+        printf("Eval / Move --- %d / %d -> %d\n", evals[i], MOVE_SRC(out[i]), MOVE_DEST(out[i]));
+    }
+    
+    free(evals);
+
+    return count;
 }
 
 
