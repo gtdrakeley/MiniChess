@@ -76,20 +76,24 @@ int EVAL_BOUND = 20000 + 2000*6 + 500 + 300 + 300 + 1;
 
 /********************  CONSTRUCTORS/DESTRUCTOR  ************************/
 void    ChessAI_init(ChessAI* self) {
+    debug("Entering ChessAI_init");
     self->turn = 1;
     self->playing = 'W';
-    self->board = (char*)malloc(31*sizeof(char));
+    self->board = malloc(31*sizeof(char));
     strcpy(self->board, "kqbnrppppp..........PPPPPRNBQK");
     self->white_score = 0;
     self->black_score = 0;
-    self->hidx = 0;
-    self->history = (History**)malloc(HIST_SIZE*sizeof(History*));
-    for (int i=0; i<HIST_SIZE; ++i) { self->history[i] = NULL; }
+    self->hist_size = HIST_SIZE;
+    self->c_hist = 0;
+    self->history = calloc(HIST_SIZE, sizeof(History*));
+    // for (int i=0; i<HIST_SIZE; ++i) { self->history[i] = NULL; }
     self->recur_calls = 0;
+    debug("Leaving ChessAI_init");
 }
 
 
 void    ChessAI_destroy(ChessAI* self) {
+    debug("Entering ChessAI_destroy");
     if (self->board) {
         free(self->board);
     }
@@ -101,6 +105,7 @@ void    ChessAI_destroy(ChessAI* self) {
         }
         free(self->history);
     }
+    debug("Leaving ChessAI_destroy");
 }
 
 
@@ -108,19 +113,27 @@ void    ChessAI_destroy(ChessAI* self) {
 /*****************************  METHODS  *******************************/
 void    ChessAI_sync(ChessAI* self, ChessAI* other) {
     char board[42] = {'\0'};
+    
     ChessAI_getBoard(self, board);
     ChessAI_setBoard(other, board);
+}
 
+
+void    ChessAI_shrinkHistory(ChessAI* self) {
+    self->history = realloc(self->history, (self->hist_size-=HIST_GROWTH)*sizeof(History*));
+}
+
+
+void    ChessAI_expandHistory(ChessAI* self) {
+    self->history = realloc(self->history, (self->hist_size+=HIST_GROWTH)*sizeof(History*));
+    for (int i=(self->c_hist)+1; i<self->hist_size; ++i) { self->history[i] = NULL; }
 }
 
 
 void    ChessAI_clearHistory(ChessAI* self) {
-    self->hidx = 0;
-    for (int i=0; i<HIST_SIZE; ++i) {
-        if (self->history[i]) {
-            free(self->history[i]);
-            self->history[i] = NULL;
-        } else { break; }
+    self->c_hist = 0;
+    for (int i=0; i<self->hist_size; ++i) {
+        if (self->history[i]) { free(self->history[i]); }
     }
 }
 
@@ -265,16 +278,21 @@ void    ChessAI_evalBoard(ChessAI* self) {
 
 
 void    ChessAI_move(ChessAI* self, int move) {
+    debug("Entering ChessAI_move");
     int src = MOVE_SRC(move);
     int dest = MOVE_DEST(move);
     char src_piece = self->board[src];
     char dest_piece = self->board[dest];
 
     debug("Preparing to allocate new history");
-    self->history[self->hidx] = (History*)malloc(sizeof(History));
-    debug("New history allocated at %p", self->history[self->hidx]);
-    History_init(self->history[(self->hidx)++], move, src_piece, dest_piece, self->white_score, self->black_score);
+    self->history[self->c_hist] = malloc(sizeof(History));
+    debug("New history allocated at %p", self->history[self->c_hist]);
+    History_init(self->history[(self->c_hist)++], move, src_piece, dest_piece, self->white_score, self->black_score);
     debug("History initialized");
+    if (self->c_hist >= self->hist_size) {
+        debug("Expanding history");
+        ChessAI_expandHistory(self);
+    }
 
     if (src_piece <= 'R') {
         switch (src_piece) {
@@ -374,12 +392,18 @@ void    ChessAI_move(ChessAI* self, int move) {
     } else {
         self->board[dest] = src_piece;
     }
+    debug("Leaving ChessAI_move");
 }
 
 
 void    ChessAI_undo(ChessAI* self) {
-    History* hist = self->history[--(self->hidx)];
-    self->history[self->hidx] = NULL;
+    debug("Entering ChessAI_undo");
+    History* hist = self->history[--(self->c_hist)];
+    self->history[self->c_hist] = NULL;
+    if (self->hist_size > HIST_SIZE && self->c_hist <= self->hist_size-HIST_GROWTH*2) {
+        debug("Shrinking history");
+        ChessAI_shrinkHistory(self);
+    }
 
     if (self->playing == 'W') {
         self->playing = 'B';
@@ -393,6 +417,7 @@ void    ChessAI_undo(ChessAI* self) {
     self->black_score = hist->black_score;
 
     free(hist);
+    debug("Leaving ChessAI_undo");
 }
 
 
@@ -739,7 +764,7 @@ int     ChessAI_movesShuffled(ChessAI* self, int* out) {
 
 int     ChessAI_movesEvaluated(ChessAI* self, int* out) {
     int count = ChessAI_movesShuffled(self, out);
-    int* evals = (int*)malloc(count*sizeof(int));
+    int* evals = malloc(count*sizeof(int));
 
     for (int i=0; i<count; ++i) {
         ChessAI_move(self, out[i]);
@@ -890,13 +915,13 @@ int     ChessAI_trnMoveAlphabeta(ChessAI* self, int duration) {
         }
     }
 
-    debug("Undoing %d moves from history of size %d due to incomplete search ...", iter_depth-temp, self->hidx);
+    debug("Undoing %d moves from history of size %d due to incomplete search ...", iter_depth-temp, self->c_hist);
     for (int i=0; i<(iter_depth-temp); ++i) {
         ChessAI_undo(self);
     }
     ChessAI_move(self, best);
-    debug("Clearing history...");
-    ChessAI_clearHistory(self);
+    // debug("Clearing history...");
+    // ChessAI_clearHistory(self);
 
     OUTPUT(
         char boardstr[42];

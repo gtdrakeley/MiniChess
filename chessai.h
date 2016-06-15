@@ -12,6 +12,8 @@
 /***********************  MACRO CONSTANTS  *****************************/
 #define HIST_SIZE 80
 
+#define HIST_GROWTH 20
+
 #define MAX_MOVES 200
 
 #define RECUR_CALLS_BOUND 100000
@@ -41,7 +43,8 @@ typedef struct ChessAI {
     int turn;
     int white_score;
     int black_score;
-    int hidx;
+    int hist_size;
+    int c_hist;
     char playing;
 } ChessAI;
 
@@ -53,6 +56,8 @@ void    ChessAI_destroy(ChessAI* self);
 
 /*****************************  METHODS  *******************************/
 void    ChessAI_sync(ChessAI* self, ChessAI* other);
+void    ChessAI_shrinkHistory(ChessAI* self);
+void    ChessAI_expandHistory(ChessAI* self);
 void    ChessAI_clearHistory(ChessAI* self);
 void    ChessAI_reset(ChessAI* self);
 void    ChessAI_getBoard(ChessAI* self, char* out);

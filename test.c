@@ -53,6 +53,9 @@ int main(int argc, char** argv) {
     
         printf("%d : %d : %d\n", w_wins, b_wins, ties);
     }
+
+    ChessAI_destroy(&white);
+    ChessAI_destroy(&black);
     
     return 0;
 
