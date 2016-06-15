@@ -910,8 +910,8 @@ int     ChessAI_trnMoveAlphabeta(ChessAI* self, int duration) {
         printf("    %-12sRecursive Calls:  NOT IMPLEMENTED\n", strtok(NULL, "\n"));
         printf("    %-12sTime Allotted:    %d ms\n", strtok(NULL, "\n"), m_duration);
         unsigned long long actual = msec()-start;
-        printf("    %-12sTime Actual:      ~%lld ms\n", strtok(NULL, "\n"), actual);
-        printf("    %-12sTime Remaining:   ~%lld ms\n", strtok(NULL, "\n"), duration-actual);
+        printf("    %-12sTime Actual:      %lld ms\n", strtok(NULL, "\n"), actual);
+        printf("    %-12sTime Remaining:   %lld ms\n", strtok(NULL, "\n"), duration-actual);
         printf("    %s\n", strtok(NULL, "\n"));
         printf("\n\n");
     );
