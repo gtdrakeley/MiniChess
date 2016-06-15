@@ -860,8 +860,8 @@ int     ChessAI_trnMoveAlphabeta(ChessAI* self, int duration) {
     int iter_depth = 1;
     int max_depth = 80-(self->turn*2-((self->playing == 'W') ? 2 : 1));
     bool elapsed = false;
-    char movestr[7];
     int m_duration = (duration - 1500) / (41 - self->turn);
+    self->recur_calls = 0;
     unsigned long long start = msec();
 
     debug("Entering while loop...");
@@ -898,14 +898,21 @@ int     ChessAI_trnMoveAlphabeta(ChessAI* self, int duration) {
     debug("Clearing history...");
     ChessAI_clearHistory(self);
 
-    MOVE_TO_STR(movestr, best); movestr[5] = '\0';
-    OUTPUT("---  Tournament Move Statistics  ---\n");
-    OUTPUT("    Move:             %s (%d -> %d)\n", movestr, MOVE_SRC(best), MOVE_DEST(best));
-    OUTPUT("    Depth Reached:    %d\n", iter_depth-1);
-    OUTPUT("    Recursive Calls:  NOT IMPLEMENTED\n");
-    OUTPUT("    Time Allotted:    %d ms\n", m_duration);
-    OUTPUT("    Time Actual:      %lld ms\n", msec()-start);
-    OUTPUT("\n\n");
+    OUTPUT(
+        char boardstr[42];
+        char movestr[7];
+        ChessAI_getBoard(self, boardstr);
+        MOVE_TO_STR(movestr, best); movestr[5] = '\0';
+        printf("------  Tournament Move Statistics  ------\n");
+        printf("    %-12sMove:             %s (%d -> %d)\n", strtok(boardstr, "\n"), movestr, MOVE_SRC(best), MOVE_DEST(best));
+        printf("    %-12sDepth Reached:    %d\n", strtok(NULL, "\n"), iter_depth-1);
+        printf("    %-12sRecursive Calls:  %ld\n", strtok(NULL, "\n"), self->recur_calls);
+        printf("    %-12sTime Allotted:    %d ms\n", strtok(NULL, "\n"), m_duration);
+        printf("    %-12sTime Actual:      %lld ms\n", strtok(NULL, "\n"), msec()-start);
+        printf("    %s\n", strtok(NULL, "\n"));
+        printf("    %s\n", strtok(NULL, "\n"));
+        printf("\n\n");
+    );
 
     return best;
 }
@@ -935,9 +942,12 @@ bool    ChessAI_trnAlphabeta(ChessAI* self, int* ret_score, unsigned long long s
 
     if (++recur_calls >= RECUR_CALLS_BOUND) {
         if ((msec()-start) >= duration) {
+            self->recur_calls += recur_calls;
+            recur_calls = 0;
             *ret_score = depth; 
             return true;
         } else {
+            self->recur_calls += recur_calls;
             recur_calls = 0;
         }
     }

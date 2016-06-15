@@ -5,6 +5,7 @@
 
 #include "history.h"
 
+#define NODEBUG
 // #define NOUTPUT
 
 

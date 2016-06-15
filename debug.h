@@ -5,19 +5,21 @@
 #include <errno.h>
 #include <string.h>
 
-#ifdef NDEBUG
+#ifdef NODEBUG
 #define debug(S, ...)
 #else
 #define debug(S, ...) fprintf(stderr, "DEBUG %s:%d: " S "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #endif
 
-#ifdef NOUTPUT
-#define OUTPUT(S, ...)
+#ifdef NOOUTPUT
+// #define OUTPUT(S, ...)
+#define OUTPUT(OUT)
 #else
-#define OUTPUT(S, ...) printf((S), ##__VA_ARGS__)
+// #define OUTPUT(S, ...) printf((S), ##__VA_ARGS__)
+#define OUTPUT(OUT) OUT
 #endif
 
-#ifdef NERR
+#ifdef NOERR
 #define strerr()
 #define log_error(S, ...)
 #define log_warning(S, ...)
