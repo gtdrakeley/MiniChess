@@ -5,9 +5,15 @@
 
 #include "history.h"
 
+// #define NOUTPUT
+
 
 /***********************  MACRO CONSTANTS  *****************************/
 #define HIST_SIZE 80
+
+#define MAX_MOVES 200
+
+#define RECUR_CALLS_BOUND 100000
 
 
 /****************************  MACROS  *********************************/
@@ -23,13 +29,14 @@
 
 #define CHECK_BITS(VAR, NUM) (((VAR) ^ (~((~0) << (NUM)))) == 0)
 
-#define RAND_INT(MIN, MAX) ((rand() % ((MAX) - (MIN) + 1)) + (MIN))
+// #define RAND_INT(MIN, MAX) ((rand() % ((MAX) - (MIN) + 1)) + (MIN))
 
 
 /****************************  STRUCTS  ********************************/
 typedef struct ChessAI {
     char* board;
     History** history;
+    long recur_calls;
     int turn;
     int white_score;
     int black_score;
@@ -71,11 +78,20 @@ int     ChessAI_moveGreedy(ChessAI* self);
 int     ChessAI_moveNegamax(ChessAI* self, int depth, int duration);
 int     ChessAI_negamax(ChessAI* self, int depth, int duration);
 int     ChessAI_moveAlphabeta(ChessAI* self, int depth, int duration);
-int     ChessAI_alphabeta(ChessAI* self, int depth, int duration, int alpha, int beta);
+int     ChessAI_stdMoveAlphabeta(ChessAI *self, int depth);
+int     ChessAI_trnMoveAlphabeta(ChessAI* self, int duration);
+int     ChessAI_stdAlphabeta(ChessAI* self, int depth, int alpha, int beta);
+bool    ChessAI_trnAlphabeta(ChessAI* self, int* ret_score, unsigned long long start, int depth, int duration, int alpha, int beta);
+
 
 
 /**************************  STATIC METHODS  ***************************/
 bool    isValid(int row, int col);
+
+
+/************************  UTILITY FUNCTIONS  **************************/
+int     max(int a, int b);
+unsigned long long     msec();
 
 
 #endif

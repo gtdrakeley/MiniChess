@@ -67,7 +67,7 @@ int     frameworkInterface_eval(ChessAI* ai) {
 }
 
 int     frameworkInterface_moves(ChessAI* ai, char* out) {
-    int moves[200] = {0};
+    int moves[MAX_MOVES] = {0};
     int count = ChessAI_moves(ai, moves);
     for (int i=0; i<count; ++i) {
         out += MOVE_TO_STR(out, moves[i]);
@@ -77,7 +77,7 @@ int     frameworkInterface_moves(ChessAI* ai, char* out) {
 }
 
 int     frameworkInterface_movesShuffled(ChessAI* ai, char* out) {
-    int moves[200] = {0};
+    int moves[MAX_MOVES] = {0};
     int count = ChessAI_movesShuffled(ai, moves);
     for (int i=0; i<count; ++i) {
         out += MOVE_TO_STR(out, moves[i]);
@@ -87,7 +87,7 @@ int     frameworkInterface_movesShuffled(ChessAI* ai, char* out) {
 }
 
 int     frameworkInterface_movesEvaluated(ChessAI* ai, char* out) {
-    int moves[200] = {0};
+    int moves[MAX_MOVES] = {0};
     int count = ChessAI_movesEvaluated(ai, moves);
     for (int i=0; i<count; ++i) {
         out += MOVE_TO_STR(out, moves[i]);
@@ -101,19 +101,23 @@ void    frameworkInterface_move(ChessAI* ai, char* in) {
 }
 
 void    frameworkInterface_moveRandom(ChessAI* ai, char* out) {
-    out += MOVE_TO_STR(out, ChessAI_moveRandom(ai));
+    int move = ChessAI_moveRandom(ai);
+    MOVE_TO_STR(out, move);
 }
 
 void    frameworkInterface_moveGreedy(ChessAI* ai, char* out) {
-    out += MOVE_TO_STR(out, ChessAI_moveGreedy(ai));
+    int move = ChessAI_moveGreedy(ai);
+    MOVE_TO_STR(out, move);
 }
 
 void    frameworkInterface_moveNegamax(ChessAI* ai, char* out, int depth, int duration) {
-    out += MOVE_TO_STR(out, ChessAI_moveNegamax(ai, depth, duration));
+    int move = ChessAI_moveNegamax(ai, depth, duration);
+    MOVE_TO_STR(out, move);
 }
 
 void    frameworkInterface_moveAlphabeta(ChessAI* ai, char* out, int depth, int duration) {
-    out += MOVE_TO_STR(out, ChessAI_moveAlphabeta(ai, depth, duration));
+    int move = ChessAI_moveAlphabeta(ai, depth, duration);
+    MOVE_TO_STR(out, move);
 }
 
 void    frameworkInterface_undo(ChessAI* ai) {

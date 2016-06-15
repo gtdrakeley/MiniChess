@@ -1,5 +1,7 @@
 #include "zeromq.h"
 
+#include <unistd.h>
+
 #include "main.h"
 #include "finterface.h"
 

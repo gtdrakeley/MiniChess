@@ -11,6 +11,12 @@
 #define debug(S, ...) fprintf(stderr, "DEBUG %s:%d: " S "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #endif
 
+#ifdef NOUTPUT
+#define OUTPUT(S, ...)
+#else
+#define OUTPUT(S, ...) printf((S), ##__VA_ARGS__)
+#endif
+
 #ifdef NERR
 #define strerr()
 #define log_error(S, ...)

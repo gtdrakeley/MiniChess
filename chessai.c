@@ -70,19 +70,22 @@ int     PAWN_POS_VALUES[] = {
     100, 100, 100, 100, 100
 };
 
+int EVAL_BOUND = 20000 + 2000*6 + 500 + 300 + 300 + 1;
+
 
 
 /********************  CONSTRUCTORS/DESTRUCTOR  ************************/
 void    ChessAI_init(ChessAI* self) {
+    self->turn = 1;
+    self->playing = 'W';
     self->board = (char*)malloc(31*sizeof(char));
     strcpy(self->board, "kqbnrppppp..........PPPPPRNBQK");
-    self->history = (History**)malloc(HIST_SIZE*sizeof(History*));
-    for (int i=0; i<HIST_SIZE; ++i) { self->history[i] = NULL; }
-    self->turn = 1;
     self->white_score = 0;
     self->black_score = 0;
     self->hidx = 0;
-    self->playing = 'W';
+    self->history = (History**)malloc(HIST_SIZE*sizeof(History*));
+    for (int i=0; i<HIST_SIZE; ++i) { self->history[i] = NULL; }
+    self->recur_calls = 0;
 }
 
 
@@ -126,6 +129,7 @@ void    ChessAI_reset(ChessAI* self) {
     self->turn = 1;
     self->playing = 'W';
     strcpy(self->board, "kqbnrppppp..........PPPPPRNBQK");
+    self->recur_calls = 0;
     ChessAI_evalBoard(self);
     ChessAI_clearHistory(self);
 }
@@ -709,7 +713,16 @@ int     ChessAI_moves(ChessAI* self, int* out) {
 int     ChessAI_movesShuffled(ChessAI* self, int* out) {
     int count = ChessAI_moves(self, out);
     int r;
+    int t;
 
+    for (int i=0; i<count-1; ++i) {
+        r = i + rand() / (RAND_MAX / (count - i) + 1);
+        t = out[r];
+        out[r] = out[i];
+        out[i] = t;
+    }
+
+    /*
     for (int i=count-1; i>0; --i) {
         r = RAND_INT(0, i);
         if (r == i) { continue; }
@@ -718,6 +731,7 @@ int     ChessAI_movesShuffled(ChessAI* self, int* out) {
         out[i] ^= out[r];
 
     }
+    */
 
     return count;
 }
@@ -730,21 +744,10 @@ int     ChessAI_movesEvaluated(ChessAI* self, int* out) {
     for (int i=0; i<count; ++i) {
         ChessAI_move(self, out[i]);
         evals[i] = ChessAI_eval(self);
-        printf("Loaded evaluation: %d from %d\n", evals[i], ChessAI_eval(self));
         ChessAI_undo(self);
     }
 
-    printf("Presort\n");
-    for (int i=0; i<count; ++i) {
-        printf("Eval / Move --- %d / %d -> %d\n", evals[i], MOVE_SRC(out[i]), MOVE_DEST(out[i]));
-    }
-
     slavesort(evals, out, count);
-    
-    printf("Postsort\n");
-    for (int i=0; i<count; ++i) {
-        printf("Eval / Move --- %d / %d -> %d\n", evals[i], MOVE_SRC(out[i]), MOVE_DEST(out[i]));
-    }
     
     free(evals);
 
@@ -753,32 +756,217 @@ int     ChessAI_movesEvaluated(ChessAI* self, int* out) {
 
 
 int     ChessAI_moveRandom(ChessAI* self) {
-    return 0;
+    int moves[MAX_MOVES];
+    
+    ChessAI_movesShuffled(self, moves);
+    ChessAI_move(self, moves[0]);
+    
+    return moves[0];
 }
 
 
 int     ChessAI_moveGreedy(ChessAI* self) {
-    return 0;
+    int moves[MAX_MOVES];
+    
+    ChessAI_movesEvaluated(self, moves);
+    ChessAI_move(self, moves[0]);
+
+    return moves[0];
 }
 
 
 int     ChessAI_moveNegamax(ChessAI* self, int depth, int duration) {
-    return 0;
+    int moves[MAX_MOVES];
+    int count = ChessAI_movesShuffled(self, moves);
+    int best = 0;
+    int score = -EVAL_BOUND;
+    int temp;
+
+    for (int i=0; i<count; ++i) {
+        ChessAI_move(self, moves[i]);
+        temp = -ChessAI_negamax(self, depth-1, duration);
+        ChessAI_undo(self);
+        if (temp > score) {
+            best = moves[i];
+            score = temp;
+        }
+    }
+
+    ChessAI_move(self, best);
+
+    return best;
 }
 
 
 int     ChessAI_negamax(ChessAI* self, int depth, int duration) {
-    return 0;
+    if (depth == 0 || ChessAI_winner(self) != '?') { return ChessAI_eval(self); }
+
+    int moves[MAX_MOVES];
+    int count = ChessAI_movesShuffled(self, moves);
+    int score = -EVAL_BOUND;
+    
+    for (int i=0; i<count; ++i) {
+        ChessAI_move(self, moves[i]);
+        score = max(score, -ChessAI_negamax(self, depth-1, duration));
+        ChessAI_undo(self);
+    }
+
+    return score;
 }
 
 
 int     ChessAI_moveAlphabeta(ChessAI* self, int depth, int duration) {
-    return 0;
+    if (depth < 0) {
+        return ChessAI_trnMoveAlphabeta(self, duration);
+    } else {
+        return ChessAI_stdMoveAlphabeta(self, depth);
+    }
 }
 
 
-int     ChessAI_alphabeta(ChessAI* self, int depth, int duration, int alpha, int beta) {
-    return 0;
+int     ChessAI_stdMoveAlphabeta(ChessAI* self, int depth) {
+    int moves[MAX_MOVES];
+    int count = ChessAI_movesEvaluated(self, moves);
+    int best = 0;
+    int alpha = -EVAL_BOUND;
+    int beta = EVAL_BOUND;
+    int temp;
+
+    for (int i=0; i<count; ++i) {
+        ChessAI_move(self, moves[i]);
+        temp = -ChessAI_stdAlphabeta(self, depth-1, -beta, -alpha);
+        ChessAI_undo(self);
+        if (temp > alpha) {
+            best = moves[i];
+            alpha = temp;
+        }
+    }
+
+    ChessAI_move(self, best);
+
+    return best;
+}
+
+
+int     ChessAI_trnMoveAlphabeta(ChessAI* self, int duration) {
+    debug("Creating locals variables...");
+    int moves[MAX_MOVES];
+    int count = ChessAI_movesEvaluated(self, moves);
+    int best = 0;
+    int t_best = 0;
+    int alpha = -EVAL_BOUND;
+    int beta = EVAL_BOUND;
+    int temp;
+    int iter_depth = 1;
+    int max_depth = 80-(self->turn*2-((self->playing == 'W') ? 2 : 1));
+    bool elapsed = false;
+    char movestr[7];
+    int m_duration = (duration - 1500) / (41 - self->turn);
+    unsigned long long start = msec();
+
+    debug("Entering while loop...");
+    while (true) {
+        for (int i=0; i<count; ++i) {
+            debug("Checking move...");
+            ChessAI_move(self, moves[i]);
+            if ((elapsed = ChessAI_trnAlphabeta(self, &temp, start, iter_depth-1, m_duration, -beta, -alpha))) { break; }
+            temp *= (-1);
+            ChessAI_undo(self);
+            debug("Comparing eval...");
+            if (temp > alpha) {
+                debug("Found new best move during search...");
+                t_best = moves[i];
+                alpha = temp;
+            }
+        }
+        if (elapsed) { break; }
+        debug("Setting new best move...");
+        best = t_best;
+        alpha = -EVAL_BOUND;
+        beta = EVAL_BOUND;
+        if (++iter_depth > max_depth) {
+            temp = iter_depth;
+            break;
+        }
+    }
+
+    debug("Undoing %d moves from history of size %d due to incomplete search ...", iter_depth-temp, self->hidx);
+    for (int i=0; i<(iter_depth-temp); ++i) {
+        ChessAI_undo(self);
+    }
+    ChessAI_move(self, best);
+    debug("Clearing history...");
+    ChessAI_clearHistory(self);
+
+    MOVE_TO_STR(movestr, best); movestr[5] = '\0';
+    OUTPUT("---  Tournament Move Statistics  ---\n");
+    OUTPUT("    Move: %s (%d -> %d)\n", movestr, MOVE_SRC(best), MOVE_DEST(best));
+    OUTPUT("    Depth Reached: %d\n", iter_depth-1);
+    OUTPUT("    Recursive Calls: NOT IMPLEMENTED\n");
+    OUTPUT("    Time Allotted: %d\n", m_duration);
+    OUTPUT("    Time Actual: %lld\n", msec()-start);
+    OUTPUT("\n\n");
+
+    return best;
+}
+
+
+int     ChessAI_stdAlphabeta(ChessAI* self, int depth, int alpha, int beta) {
+    if (depth == 0 || ChessAI_winner(self) != '?') { return ChessAI_eval(self); }
+
+    int moves[MAX_MOVES];
+    int count = ChessAI_movesEvaluated(self, moves);
+    int score = -EVAL_BOUND;
+
+    for (int i=0; i<count; ++i) {
+        ChessAI_move(self, moves[i]);
+        score = max(score, -ChessAI_stdAlphabeta(self, depth-1, -beta, -alpha));
+        ChessAI_undo(self);
+        alpha = max(alpha, score);
+        if (alpha >= beta) { break; }
+    }
+
+    return score;
+}
+
+
+bool    ChessAI_trnAlphabeta(ChessAI* self, int* ret_score, unsigned long long start, int depth, int duration, int alpha, int beta) {
+    static unsigned long recur_calls = 0;
+
+    if (++recur_calls >= RECUR_CALLS_BOUND) {
+        if ((msec()-start) >= duration) {
+            *ret_score = depth; 
+            return true;
+        } else {
+            recur_calls = 0;
+        }
+    }
+
+    if (depth == 0 || ChessAI_winner(self) != '?') {
+        *ret_score = ChessAI_eval(self);
+        return false;
+    }
+
+    int moves[MAX_MOVES];
+    int count = ChessAI_movesEvaluated(self, moves);
+    int score = -EVAL_BOUND;
+    int temp = 0;
+
+    for (int i=0; i<count; ++i) {
+        ChessAI_move(self, moves[i]);
+        if (ChessAI_trnAlphabeta(self, &temp, start, depth-1, duration, -beta, -alpha)) {
+            *ret_score = temp;
+            return true;
+        }
+        score = max(score, -temp);
+        ChessAI_undo(self);
+        alpha = max(alpha, score);
+        if (alpha >= beta) { break; }
+    }
+
+    *ret_score = score;
+
+    return false;
 }
 
 
@@ -796,4 +984,20 @@ bool    isValid(int row, int col) {
     } else {
         return true;
     }
+}
+
+
+
+/************************  UTILITY FUNCTIONS  **************************/
+int     max(int a, int b) {
+    return (a > b) ? (a) : (b);
+}
+
+
+unsigned long long     msec() {
+    struct timeval tval;
+
+    gettimeofday(&tval, NULL);
+
+    return (tval.tv_sec * 1000) + (tval.tv_usec / 1000);
 }
