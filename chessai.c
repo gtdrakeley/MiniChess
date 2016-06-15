@@ -900,11 +900,11 @@ int     ChessAI_trnMoveAlphabeta(ChessAI* self, int duration) {
 
     MOVE_TO_STR(movestr, best); movestr[5] = '\0';
     OUTPUT("---  Tournament Move Statistics  ---\n");
-    OUTPUT("    Move: %s (%d -> %d)\n", movestr, MOVE_SRC(best), MOVE_DEST(best));
-    OUTPUT("    Depth Reached: %d\n", iter_depth-1);
-    OUTPUT("    Recursive Calls: NOT IMPLEMENTED\n");
-    OUTPUT("    Time Allotted: %d ms\n", m_duration);
-    OUTPUT("    Time Actual: %lld ms\n", msec()-start);
+    OUTPUT("    Move:             %s (%d -> %d)\n", movestr, MOVE_SRC(best), MOVE_DEST(best));
+    OUTPUT("    Depth Reached:    %d\n", iter_depth-1);
+    OUTPUT("    Recursive Calls:  NOT IMPLEMENTED\n");
+    OUTPUT("    Time Allotted:    %d ms\n", m_duration);
+    OUTPUT("    Time Actual:      %lld ms\n", msec()-start);
     OUTPUT("\n\n");
 
     return best;
