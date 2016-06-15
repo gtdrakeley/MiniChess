@@ -861,7 +861,7 @@ int     ChessAI_trnMoveAlphabeta(ChessAI* self, int duration) {
     int max_depth = 80-(self->turn*2-((self->playing == 'W') ? 2 : 1));
     bool elapsed = false;
     int m_duration = (duration - 1500) / (41 - self->turn);
-    self->recur_calls = 0;
+    // self->recur_calls = 0;
     unsigned long long start = msec();
 
     debug("Entering while loop...");
@@ -906,7 +906,8 @@ int     ChessAI_trnMoveAlphabeta(ChessAI* self, int duration) {
         printf("------  Tournament Move Statistics  ------\n");
         printf("    %-12sMove:             %s (%d -> %d)\n", strtok(boardstr, "\n"), movestr, MOVE_SRC(best), MOVE_DEST(best));
         printf("    %-12sDepth Reached:    %d\n", strtok(NULL, "\n"), iter_depth-1);
-        printf("    %-12sRecursive Calls:  %ld\n", strtok(NULL, "\n"), self->recur_calls);
+        // printf("    %-12sRecursive Calls:  %ld\n", strtok(NULL, "\n"), self->recur_calls);
+        printf("    %-12sRecursive Calls:  NOT IMPLEMENTED\n", strtok(NULL, "\n"));
         printf("    %-12sTime Allotted:    %d ms\n", strtok(NULL, "\n"), m_duration);
         printf("    %-12sTime Actual:      %lld ms\n", strtok(NULL, "\n"), msec()-start);
         printf("    %s\n", strtok(NULL, "\n"));
@@ -942,12 +943,12 @@ bool    ChessAI_trnAlphabeta(ChessAI* self, int* ret_score, unsigned long long s
 
     if (++recur_calls >= RECUR_CALLS_BOUND) {
         if ((msec()-start) >= duration) {
-            self->recur_calls += recur_calls;
+            // self->recur_calls += recur_calls;
             recur_calls = 0;
             *ret_score = depth; 
             return true;
         } else {
-            self->recur_calls += recur_calls;
+            // self->recur_calls += recur_calls;
             recur_calls = 0;
         }
     }
