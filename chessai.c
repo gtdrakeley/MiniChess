@@ -99,9 +99,7 @@ void    ChessAI_destroy(ChessAI* self) {
     }
     if (self->history) {
         for (int i=0; i<HIST_SIZE; ++i) {
-            if (self->history[i]) {
-                free(self->history[i]);
-            } else { break; }
+            if (self->history[i]) { free(self->history[i]); }
         }
         free(self->history);
     }
@@ -133,7 +131,10 @@ void    ChessAI_expandHistory(ChessAI* self) {
 void    ChessAI_clearHistory(ChessAI* self) {
     self->c_hist = 0;
     for (int i=0; i<self->hist_size; ++i) {
-        if (self->history[i]) { free(self->history[i]); }
+        if (self->history[i]) {
+            free(self->history[i]);
+            self->history[i] = NULL;
+        }
     }
 }
 
@@ -145,6 +146,10 @@ void    ChessAI_reset(ChessAI* self) {
     self->recur_calls = 0;
     ChessAI_evalBoard(self);
     ChessAI_clearHistory(self);
+    if (self->hist_size > HIST_SIZE) {
+        self->history = realloc(self->history, HIST_SIZE*sizeof(History*));
+        self->hist_size = HIST_SIZE;
+    }
 }
 
 
