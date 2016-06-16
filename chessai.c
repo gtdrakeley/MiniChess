@@ -398,6 +398,7 @@ void    ChessAI_move(ChessAI* self, int move) {
 
 void    ChessAI_undo(ChessAI* self) {
     debug("Entering ChessAI_undo");
+    verify(self->c_hist > 0, "Can't undo from empty history.");
     History* hist = self->history[--(self->c_hist)];
     self->history[self->c_hist] = NULL;
     if (self->hist_size > HIST_SIZE && self->c_hist <= self->hist_size-HIST_GROWTH*2) {
@@ -418,6 +419,11 @@ void    ChessAI_undo(ChessAI* self) {
 
     free(hist);
     debug("Leaving ChessAI_undo");
+
+    return;
+
+error:
+    noop;
 }
 
 

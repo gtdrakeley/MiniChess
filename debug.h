@@ -35,7 +35,7 @@
 #define log_info(S, ...) fprintf(stderr, "[INFO] (%s:%d) " S "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #define verify(C, S, ...) if(!(C)) { log_error(S, ##__VA_ARGS__); errno=0; goto error; }
 #define sentry(S, ...) { log_error(S, ##__VA_ARGS__); errno=0; goto error; }
-#define verify_mem(M, ...) check((M), "Memory allocation failure.")
+#define verify_mem(M, ...) verify((M), "Memory error.")
 #define verify_debug(C, S, ...) if(!(C)) { debug(S, ##__VA_ARGS__); errno=0; goto error; }
 #endif
 
