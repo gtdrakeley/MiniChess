@@ -38,6 +38,13 @@
 /****************************  STRUCTS  ********************************/
 typedef struct ChessAI {
     char* board;
+    int* king_pos_values;
+    int* queen_pos_values;
+    int* bishop_pos_values;
+    int* knight_pos_values;
+    int* rook_pos_values;
+    int* pawn_pos_values;
+    char* pval_fname;
     History** history;
     long recur_calls;
     int turn;
@@ -45,12 +52,14 @@ typedef struct ChessAI {
     int black_score;
     int hist_size;
     int c_hist;
+    int eval_bound;
     char playing;
 } ChessAI;
 
 
-/********************  CONSTRUCTORS/DESTRUCTOR  ************************/
-void    ChessAI_init(ChessAI* self);
+/**************  CONSTRUCTORS/DESTRUCTOR/INITIALIZERS  *****************/
+void    ChessAI_init(ChessAI* self, char* fname);
+void    ChessAI_readPieceValues(ChessAI* self, char* fname); 
 void    ChessAI_destroy(ChessAI* self);
 
 
@@ -97,6 +106,7 @@ bool    isValid(int row, int col);
 
 /************************  UTILITY FUNCTIONS  **************************/
 int     max(int a, int b);
+int     arrmax(int* arr, int num);
 unsigned long long     msec();
 
 

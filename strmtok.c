@@ -55,7 +55,8 @@ void    strmtok_init(int num, ...) {
 char*   strmtok(char* base, char* delims) {
     int c_idx = find_current(base);
     char* current = CURRENTS[c_idx];
-    
+
+    if (*(CURRENTS[c_idx]) == '\0') { return NULL; }
     for (;; ++(CURRENTS[c_idx])) {
         if (*(CURRENTS[c_idx]) == '\0') {
             return current;

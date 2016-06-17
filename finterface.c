@@ -31,7 +31,7 @@ bool    frameworkInterface_isValid(int row, int col) {
 
 bool    frameworkInterface_isEnemy(ChessAI* ai, char piece) {
     ChessAI temp;
-    ChessAI_init(&temp);
+    ChessAI_init(&temp, ai->pval_fname);
     ChessAI_sync(ai, &temp);
     temp.board[0] = piece;
     bool ret = ChessAI_isEnemy(&temp, 0, 0);
@@ -42,7 +42,7 @@ bool    frameworkInterface_isEnemy(ChessAI* ai, char piece) {
 
 bool    frameworkInterface_isOwn(ChessAI* ai, char piece) {
     ChessAI temp;
-    ChessAI_init(&temp);
+    ChessAI_init(&temp, ai->pval_fname);
     ChessAI_sync(ai, &temp);
     temp.board[0] = piece;
     bool ret = ChessAI_isOwn(&temp, 0, 0);
@@ -53,7 +53,7 @@ bool    frameworkInterface_isOwn(ChessAI* ai, char piece) {
 
 bool    frameworkInterface_isNothing(ChessAI* ai, char piece) {
     ChessAI temp;
-    ChessAI_init(&temp);
+    ChessAI_init(&temp, ai->pval_fname);
     ChessAI_sync(ai, &temp);
     temp.board[0] = piece;
     bool ret = ChessAI_isNothing(&temp, 0, 0);

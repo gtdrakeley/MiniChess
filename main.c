@@ -28,7 +28,10 @@ int main(int argc, char** argv) {
     }
     
     {
-        zeromq_start();
+        ChessAI ai;
+        ChessAI_init(&ai, NULL);
+        zeromq_start(&ai);
+        ChessAI_destroy(&ai);
     }
     
     return 0;

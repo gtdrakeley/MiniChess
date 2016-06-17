@@ -7,7 +7,7 @@
 
 bool zeromq_boolRunning = false;
 
-void zeromq_start() {
+void zeromq_start(ChessAI* ai) {
     {
         zeromq_boolRunning = true;
     }
@@ -27,8 +27,8 @@ void zeromq_start() {
         }
         
         {
-            ChessAI ai;
-            ChessAI_init(&ai);
+            // ChessAI ai;
+            // ChessAI_init(ai);
             do {
                 cJSON* cjsonIn = NULL;
                 cJSON* cjsonOut = cJSON_CreateObject();
@@ -49,13 +49,13 @@ void zeromq_start() {
                         
                     } else if (strcmp(cJSON_GetObjectItem(cjsonIn, "strFunction")->valuestring, "chess_reset") == 0) {
                         // chess_reset();
-                        frameworkInterface_reset(&ai);
+                        frameworkInterface_reset(ai);
                         
                     } else if (strcmp(cJSON_GetObjectItem(cjsonIn, "strFunction")->valuestring, "chess_boardGet") == 0) {
                         char charOut[1024] = { };
                         
                         // chess_boardGet(charOut);
-                        frameworkInterface_getBoard(&ai, charOut);
+                        frameworkInterface_getBoard(ai, charOut);
                         
                         cJSON_AddStringToObject(cjsonOut, "strOut", charOut);
                         
@@ -65,13 +65,13 @@ void zeromq_start() {
                         strcpy(charIn, cJSON_GetObjectItem(cjsonIn, "strIn")->valuestring);
                         
                         // chess_boardSet(charIn);
-                        frameworkInterface_setBoard(&ai, charIn);
+                        frameworkInterface_setBoard(ai, charIn);
                         
                     } else if (strcmp(cJSON_GetObjectItem(cjsonIn, "strFunction")->valuestring, "chess_winner") == 0) {
                         char charReturn[16] = { };
                         
                         // charReturn[0] = chess_winner();
-                        charReturn[0] = frameworkInterface_winner(&ai);
+                        charReturn[0] = frameworkInterface_winner(ai);
                         charReturn[1] = '\0';
                         
                         cJSON_AddStringToObject(cjsonOut, "strReturn", charReturn);
@@ -86,7 +86,7 @@ void zeromq_start() {
                         strcpy(charIn, cJSON_GetObjectItem(cjsonIn, "strPiece")->valuestring);
                         
                         // cJSON_AddBoolToObject(cjsonOut, "boolReturn", chess_isEnemy(charIn[0]));
-                        cJSON_AddBoolToObject(cjsonOut, "boolReturn", frameworkInterface_isEnemy(&ai, charIn[0]));
+                        cJSON_AddBoolToObject(cjsonOut, "boolReturn", frameworkInterface_isEnemy(ai, charIn[0]));
                         
                     } else if (strcmp(cJSON_GetObjectItem(cjsonIn, "strFunction")->valuestring, "chess_isOwn") == 0) {
                         char charIn[16] = { };
@@ -94,7 +94,7 @@ void zeromq_start() {
                         strcpy(charIn, cJSON_GetObjectItem(cjsonIn, "strPiece")->valuestring);
                         
                         // cJSON_AddBoolToObject(cjsonOut, "boolReturn", chess_isOwn(charIn[0]));
-                        cJSON_AddBoolToObject(cjsonOut, "boolReturn", frameworkInterface_isOwn(&ai, charIn[0]));
+                        cJSON_AddBoolToObject(cjsonOut, "boolReturn", frameworkInterface_isOwn(ai, charIn[0]));
                         
                     } else if (strcmp(cJSON_GetObjectItem(cjsonIn, "strFunction")->valuestring, "chess_isNothing") == 0) {
                         char charIn[16] = { };
@@ -102,18 +102,18 @@ void zeromq_start() {
                         strcpy(charIn, cJSON_GetObjectItem(cjsonIn, "strPiece")->valuestring);
                         
                         // cJSON_AddBoolToObject(cjsonOut, "boolReturn", chess_isNothing(charIn[0]));
-                        cJSON_AddBoolToObject(cjsonOut, "boolReturn", frameworkInterface_isNothing(&ai, charIn[0]));
+                        cJSON_AddBoolToObject(cjsonOut, "boolReturn", frameworkInterface_isNothing(ai, charIn[0]));
                         
                     } else if (strcmp(cJSON_GetObjectItem(cjsonIn, "strFunction")->valuestring, "chess_eval") == 0) {
                         // cJSON_AddNumberToObject(cjsonOut, "intReturn", chess_eval());
-                        cJSON_AddNumberToObject(cjsonOut, "intReturn", frameworkInterface_eval(&ai));
+                        cJSON_AddNumberToObject(cjsonOut, "intReturn", frameworkInterface_eval(ai));
                         
                     } else if (strcmp(cJSON_GetObjectItem(cjsonIn, "strFunction")->valuestring, "chess_moves") == 0) {
                         int intOut = 0;
                         char charOut[1024] = { };
                         
                         // intOut = chess_moves(charOut);
-                        intOut = frameworkInterface_moves(&ai, charOut);
+                        intOut = frameworkInterface_moves(ai, charOut);
                         
                         cJSON_AddNumberToObject(cjsonOut, "intOut", intOut);
                         cJSON_AddStringToObject(cjsonOut, "strOut", charOut);
@@ -123,7 +123,7 @@ void zeromq_start() {
                         char charOut[1024] = { };
                         
                         // intOut = chess_movesShuffled(charOut);
-                        intOut = frameworkInterface_movesShuffled(&ai, charOut);
+                        intOut = frameworkInterface_movesShuffled(ai, charOut);
                         
                         cJSON_AddNumberToObject(cjsonOut, "intOut", intOut);
                         cJSON_AddStringToObject(cjsonOut, "strOut", charOut);
@@ -133,7 +133,7 @@ void zeromq_start() {
                         char charOut[1024] = { };
                         
                         // intOut = chess_movesEvaluated(charOut);
-                        intOut = frameworkInterface_movesEvaluated(&ai, charOut);
+                        intOut = frameworkInterface_movesEvaluated(ai, charOut);
                         
                         cJSON_AddNumberToObject(cjsonOut, "intOut", intOut);
                         cJSON_AddStringToObject(cjsonOut, "strOut", charOut);
@@ -144,13 +144,13 @@ void zeromq_start() {
                         strcpy(charIn, cJSON_GetObjectItem(cjsonIn, "strIn")->valuestring);
                         
                         // chess_move(charIn);
-                        frameworkInterface_move(&ai, charIn);
+                        frameworkInterface_move(ai, charIn);
                         
                     } else if (strcmp(cJSON_GetObjectItem(cjsonIn, "strFunction")->valuestring, "chess_moveRandom") == 0) {
                         char charOut[16] = { };
                         
                         // chess_moveRandom(charOut);
-                        frameworkInterface_moveRandom(&ai, charOut);
+                        frameworkInterface_moveRandom(ai, charOut);
                         
                         cJSON_AddStringToObject(cjsonOut, "strOut", charOut);
                         
@@ -158,7 +158,7 @@ void zeromq_start() {
                         char charOut[16] = { };
                         
                         // chess_moveGreedy(charOut);
-                        frameworkInterface_moveGreedy(&ai, charOut);
+                        frameworkInterface_moveGreedy(ai, charOut);
                         
                         cJSON_AddStringToObject(cjsonOut, "strOut", charOut);
                         
@@ -166,7 +166,7 @@ void zeromq_start() {
                         char charOut[16] = { };
                         
                         // chess_moveNegamax(charOut, cJSON_GetObjectItem(cjsonIn, "intDepth")->valueint, cJSON_GetObjectItem(cjsonIn, "intDuration")->valueint);
-                        frameworkInterface_moveNegamax(&ai, charOut, cJSON_GetObjectItem(cjsonIn, "intDepth")->valueint, cJSON_GetObjectItem(cjsonIn, "intDuration")->valueint);
+                        frameworkInterface_moveNegamax(ai, charOut, cJSON_GetObjectItem(cjsonIn, "intDepth")->valueint, cJSON_GetObjectItem(cjsonIn, "intDuration")->valueint);
                         
                         cJSON_AddStringToObject(cjsonOut, "strOut", charOut);
                         
@@ -174,13 +174,13 @@ void zeromq_start() {
                         char charOut[16] = { };
                         
                         // chess_moveAlphabeta(charOut, cJSON_GetObjectItem(cjsonIn, "intDepth")->valueint, cJSON_GetObjectItem(cjsonIn, "intDuration")->valueint);
-                        frameworkInterface_moveAlphabeta(&ai, charOut, cJSON_GetObjectItem(cjsonIn, "intDepth")->valueint, cJSON_GetObjectItem(cjsonIn, "intDuration")->valueint);
+                        frameworkInterface_moveAlphabeta(ai, charOut, cJSON_GetObjectItem(cjsonIn, "intDepth")->valueint, cJSON_GetObjectItem(cjsonIn, "intDuration")->valueint);
                         
                         cJSON_AddStringToObject(cjsonOut, "strOut", charOut);
                         
                     } else if (strcmp(cJSON_GetObjectItem(cjsonIn, "strFunction")->valuestring, "chess_undo") == 0) {
                         // chess_undo();
-                        frameworkInterface_undo(&ai);
+                        frameworkInterface_undo(ai);
                         
                     }
                 }
@@ -199,7 +199,7 @@ void zeromq_start() {
                 cJSON_Delete(cjsonOut);
             } while (zeromq_boolRunning == true);
 
-            // ChessAI_destroy(&ai);
+            // ChessAI_destroy(ai);
         }
         
         zmq_close(socketHandle);

@@ -17,7 +17,7 @@
 
 // char    BLACK_PIECES[] = "kqbnrp";
 
-int     KING_POS_VALUES[] = {
+int     DEFAULT_KING_POS_VALUES[] = {
     20000, 20000, 20000, 20000, 20000,
     20000, 20000, 20000, 20000, 20000,
     20000, 20000, 20000, 20000, 20000,
@@ -26,7 +26,7 @@ int     KING_POS_VALUES[] = {
     20000, 20000, 20000, 20000, 20000
 };
 
-int     QUEEN_POS_VALUES[] = {
+int     DEFAULT_QUEEN_POS_VALUES[] = {
     2000, 2000, 2000, 2000, 2000,
     2000, 2000, 2000, 2000, 2000,
     2000, 2000, 2000, 2000, 2000,
@@ -35,7 +35,7 @@ int     QUEEN_POS_VALUES[] = {
     2000, 2000, 2000, 2000, 2000
 };
 
-int     BISHOP_POS_VALUES[] = {
+int     DEFAULT_BISHOP_POS_VALUES[] = {
     300, 300, 300, 300, 300,
     300, 300, 300, 300, 300,
     300, 300, 300, 300, 300,
@@ -44,7 +44,7 @@ int     BISHOP_POS_VALUES[] = {
     300, 300, 300, 300, 300
 };
 
-int     KNIGHT_POS_VALUES[] = {
+int     DEFAULT_KNIGHT_POS_VALUES[] = {
     300, 300, 300, 300, 300,
     300, 300, 300, 300, 300,
     300, 300, 300, 300, 300,
@@ -53,7 +53,7 @@ int     KNIGHT_POS_VALUES[] = {
     300, 300, 300, 300, 300
 };
 
-int     ROOK_POS_VALUES[] = {
+int     DEFAULT_ROOK_POS_VALUES[] = {
     500, 500, 500, 500, 500,
     500, 500, 500, 500, 500,
     500, 500, 500, 500, 500,
@@ -62,7 +62,7 @@ int     ROOK_POS_VALUES[] = {
     500, 500, 500, 500, 500
 };
 
-int     PAWN_POS_VALUES[] = {
+int     DEFAULT_PAWN_POS_VALUES[] = {
     2000, 2000, 2000, 2000, 2000,
     100, 100, 100, 100, 100,
     100, 100, 100, 100, 100,
@@ -71,12 +71,12 @@ int     PAWN_POS_VALUES[] = {
     100, 100, 100, 100, 100
 };
 
-int EVAL_BOUND = 20000 + 2000*6 + 500 + 300 + 300 + 1;
+int DEFAULT_EVAL_BOUND = 20000 + 2000*6 + 500 + 300 + 300 + 1;
 
 
 
 /********************  CONSTRUCTORS/DESTRUCTOR  ************************/
-void    ChessAI_init(ChessAI* self) {
+void    ChessAI_init(ChessAI* self, char* fname) {
     debug("Entering ChessAI_init");
     self->turn = 1;
     self->playing = 'W';
@@ -89,7 +89,75 @@ void    ChessAI_init(ChessAI* self) {
     self->history = calloc(HIST_SIZE, sizeof(History*));
     // for (int i=0; i<HIST_SIZE; ++i) { self->history[i] = NULL; }
     self->recur_calls = 0;
+    self->king_pos_values = NULL;
+    self->queen_pos_values = NULL;
+    self->bishop_pos_values = NULL;
+    self->knight_pos_values = NULL;
+    self->rook_pos_values = NULL;
+    self->pawn_pos_values = NULL;
+    self->pval_fname = NULL;
+    if (fname) { ChessAI_readPieceValues(self, fname); }
+    if (!self->king_pos_values || !self->queen_pos_values || !self->bishop_pos_values ||
+            !self->knight_pos_values || !self->rook_pos_values || !self->pawn_pos_values) {
+        ChessAI_readPieceValues(self, "default.pval");
+    }
     debug("Leaving ChessAI_init");
+}
+
+
+void    ChessAI_readPieceValues(ChessAI* self, char* fname) {
+    FILE* infile = fopen(fname, "r");
+    char buffer[2048];
+    char* token;
+
+    fread(buffer, 2048, sizeof(char), infile);
+
+    token = strtok(buffer, " \n");
+    while (token) {
+        if (!self->king_pos_values && strcmp(token, "KING") == 0) {
+            self->king_pos_values = malloc(30*sizeof(int));
+            for (int i=0; i<30; ++i) {
+                token = strtok(NULL, " \n");
+                self->king_pos_values[i] = atoi(token);
+            }
+        }
+        if (!self->queen_pos_values && strcmp(token, "QUEEN") == 0) {
+            self->queen_pos_values = malloc(30*sizeof(int));
+            for (int i=0; i<30; ++i) {
+                token = strtok(NULL, " \n");
+                self->queen_pos_values[i] = atoi(token);
+            }
+        }
+        if (!self->bishop_pos_values && strcmp(token, "BISHOP") == 0) {
+            self->bishop_pos_values = malloc(30*sizeof(int));
+            for (int i=0; i<30; ++i) {
+                token = strtok(NULL, " \n");
+                self->bishop_pos_values[i] = atoi(token);
+            }
+        }
+        if (!self->knight_pos_values && strcmp(token, "KNIGHT") == 0) {
+            self->knight_pos_values = malloc(30*sizeof(int));
+            for (int i=0; i<30; ++i) {
+                token = strtok(NULL, " \n");
+                self->knight_pos_values[i] = atoi(token);
+            }
+        }
+        if (!self->rook_pos_values && strcmp(token, "ROOK") == 0) {
+            self->rook_pos_values = malloc(30*sizeof(int));
+            for (int i=0; i<30; ++i) {
+                token = strtok(NULL, " \n");
+                self->rook_pos_values[i] = atoi(token);
+            }
+        }
+        if (!self->pawn_pos_values && strcmp(token, "PAWN") == 0) {
+            self->pawn_pos_values = malloc(30*sizeof(int));
+            for (int i=0; i<30; ++i) {
+                token = strtok(NULL, " \n");
+                self->pawn_pos_values[i] = atoi(token);
+            }
+        }
+        token = strtok(NULL, " \n");
+    }
 }
 
 
@@ -104,6 +172,12 @@ void    ChessAI_destroy(ChessAI* self) {
         }
         free(self->history);
     }
+    if (self->king_pos_values) { free(self->king_pos_values); }
+    if (self->queen_pos_values) { free(self->queen_pos_values); }
+    if (self->bishop_pos_values) { free(self->bishop_pos_values); }
+    if (self->knight_pos_values) { free(self->knight_pos_values); }
+    if (self->rook_pos_values) { free(self->rook_pos_values); }
+    if (self->pawn_pos_values) { free(self->pawn_pos_values); }
     debug("Leaving ChessAI_destroy");
 }
 
@@ -243,40 +317,40 @@ void    ChessAI_evalBoard(ChessAI* self) {
     for (int i=0; i<30; ++i) {
         switch (self->board[i]) {
             case 'K':
-                self->white_score += KING_POS_VALUES[i];
+                self->white_score += self->king_pos_values[i];
                 break;
             case 'Q':
-                self->white_score += QUEEN_POS_VALUES[i];
+                self->white_score += self->queen_pos_values[i];
                 break;
             case 'B':
-                self->white_score += BISHOP_POS_VALUES[i];
+                self->white_score += self->bishop_pos_values[i];
                 break;
             case 'N':
-                self->white_score += KNIGHT_POS_VALUES[i];
+                self->white_score += self->knight_pos_values[i];
                 break;
             case 'R':
-                self->white_score += ROOK_POS_VALUES[i];
+                self->white_score += self->rook_pos_values[i];
                 break;
             case 'P':
-                self->white_score += PAWN_POS_VALUES[i];
+                self->white_score += self->pawn_pos_values[i];
                 break;
             case 'k':
-                self->black_score += KING_POS_VALUES[29-i];
+                self->black_score += self->king_pos_values[29-i];
                 break;
             case 'q':
-                self->black_score += QUEEN_POS_VALUES[29-i];
+                self->black_score += self->queen_pos_values[29-i];
                 break;
             case 'b':
-                self->black_score += BISHOP_POS_VALUES[29-i];
+                self->black_score += self->bishop_pos_values[29-i];
                 break;
             case 'n':
-                self->black_score += KNIGHT_POS_VALUES[29-i];
+                self->black_score += self->knight_pos_values[29-i];
                 break;
             case 'r':
-                self->black_score += ROOK_POS_VALUES[29-i];
+                self->black_score += self->rook_pos_values[29-i];
                 break;
             case 'p':
-                self->black_score += PAWN_POS_VALUES[29-i];
+                self->black_score += self->pawn_pos_values[29-i];
                 break;
         }
     }
@@ -303,83 +377,83 @@ void    ChessAI_move(ChessAI* self, int move) {
     if (src_piece <= 'R') {
         switch (src_piece) {
             case 'K':
-                self->white_score -= KING_POS_VALUES[src] - KING_POS_VALUES[dest];
+                self->white_score -= self->king_pos_values[src] - self->king_pos_values[dest];
                 break;
             case 'Q':
-                self->white_score -= QUEEN_POS_VALUES[src] - QUEEN_POS_VALUES[dest];
+                self->white_score -= self->queen_pos_values[src] - self->queen_pos_values[dest];
                 break;
             case 'B':
-                self->white_score -= BISHOP_POS_VALUES[src] - BISHOP_POS_VALUES[dest];
+                self->white_score -= self->bishop_pos_values[src] - self->bishop_pos_values[dest];
                 break;
             case 'N':
-                self->white_score -= KNIGHT_POS_VALUES[src] - KNIGHT_POS_VALUES[dest];
+                self->white_score -= self->knight_pos_values[src] - self->knight_pos_values[dest];
                 break;
             case 'R':
-                self->white_score -= ROOK_POS_VALUES[src] - ROOK_POS_VALUES[dest];
+                self->white_score -= self->rook_pos_values[src] - self->rook_pos_values[dest];
                 break;
             case 'P':
-                self->white_score -= PAWN_POS_VALUES[src] - PAWN_POS_VALUES[dest];
+                self->white_score -= self->pawn_pos_values[src] - self->pawn_pos_values[dest];
                 break;
         }
         switch (dest_piece) {
             case 'k':
-                self->black_score -= KING_POS_VALUES[29-dest];
+                self->black_score -= self->king_pos_values[29-dest];
                 break;
             case 'q':
-                self->black_score -= QUEEN_POS_VALUES[29-dest];
+                self->black_score -= self->queen_pos_values[29-dest];
                 break;
             case 'b':
-                self->black_score -= BISHOP_POS_VALUES[29-dest];
+                self->black_score -= self->bishop_pos_values[29-dest];
                 break;
             case 'n':
-                self->black_score -= KNIGHT_POS_VALUES[29-dest];
+                self->black_score -= self->knight_pos_values[29-dest];
                 break;
             case 'r':
-                self->black_score -= ROOK_POS_VALUES[29-dest];
+                self->black_score -= self->rook_pos_values[29-dest];
                 break;
             case 'p':
-                self->black_score -= PAWN_POS_VALUES[29-dest];
+                self->black_score -= self->pawn_pos_values[29-dest];
                 break;
         }
     } else {
         switch (src_piece) {
             case 'k':
-                self->black_score -= KING_POS_VALUES[29-src] - KING_POS_VALUES[29-dest];
+                self->black_score -= self->king_pos_values[29-src] - self->king_pos_values[29-dest];
                 break;
             case 'q':
-                self->black_score -= QUEEN_POS_VALUES[29-src] - QUEEN_POS_VALUES[29-dest];
+                self->black_score -= self->queen_pos_values[29-src] - self->queen_pos_values[29-dest];
                 break;
             case 'b':
-                self->black_score -= BISHOP_POS_VALUES[29-src] - BISHOP_POS_VALUES[29-dest];
+                self->black_score -= self->bishop_pos_values[29-src] - self->bishop_pos_values[29-dest];
                 break;
             case 'n':
-                self->black_score -= KNIGHT_POS_VALUES[29-src] - KNIGHT_POS_VALUES[29-dest];
+                self->black_score -= self->knight_pos_values[29-src] - self->knight_pos_values[29-dest];
                 break;
             case 'r':
-                self->black_score -= ROOK_POS_VALUES[29-src] - ROOK_POS_VALUES[29-dest];
+                self->black_score -= self->rook_pos_values[29-src] - self->rook_pos_values[29-dest];
                 break;
             case 'p':
-                self->black_score -= PAWN_POS_VALUES[29-src] - PAWN_POS_VALUES[29-dest];
+                self->black_score -= self->pawn_pos_values[29-src] - self->pawn_pos_values[29-dest];
                 break;
         }
         switch (dest_piece) {
             case 'K':
-                self->white_score -= KING_POS_VALUES[dest];
+                self->white_score -= self->king_pos_values[dest];
                 break;
             case 'Q':
-                self->white_score -= QUEEN_POS_VALUES[dest];
+                self->white_score -= self->queen_pos_values[dest];
                 break;
             case 'B':
-                self->white_score -= BISHOP_POS_VALUES[dest];
+                self->white_score -= self->bishop_pos_values[dest];
                 break;
             case 'N':
-                self->white_score -= KNIGHT_POS_VALUES[dest];
+                self->white_score -= self->knight_pos_values[dest];
                 break;
             case 'R':
-                self->white_score -= ROOK_POS_VALUES[dest];
+                self->white_score -= self->rook_pos_values[dest];
                 break;
             case 'P':
-                self->white_score -= PAWN_POS_VALUES[dest];
+                self->white_score -= self->pawn_pos_values[dest];
                 break;
         }
     }
@@ -816,7 +890,7 @@ int     ChessAI_moveNegamax(ChessAI* self, int depth, int duration) {
     int moves[MAX_MOVES];
     int count = ChessAI_movesShuffled(self, moves);
     int best = 0;
-    int score = -EVAL_BOUND;
+    int score = -(self->eval_bound);
     int temp;
 
     for (int i=0; i<count; ++i) {
@@ -840,7 +914,7 @@ int     ChessAI_negamax(ChessAI* self, int depth, int duration) {
 
     int moves[MAX_MOVES];
     int count = ChessAI_movesShuffled(self, moves);
-    int score = -EVAL_BOUND;
+    int score = -(self->eval_bound);
 
     for (int i=0; i<count; ++i) {
         ChessAI_move(self, moves[i]);
@@ -865,8 +939,8 @@ int     ChessAI_stdMoveAlphabeta(ChessAI* self, int depth) {
     int moves[MAX_MOVES];
     int count = ChessAI_movesEvaluated(self, moves);
     int best = 0;
-    int alpha = -EVAL_BOUND;
-    int beta = EVAL_BOUND;
+    int alpha = -(self->eval_bound);
+    int beta = self->eval_bound;
     int temp;
 
     for (int i=0; i<count; ++i) {
@@ -891,8 +965,8 @@ int     ChessAI_trnMoveAlphabeta(ChessAI* self, int duration) {
     int count = ChessAI_movesEvaluated(self, moves);
     int best = 0;
     int t_best = 0;
-    int alpha = -EVAL_BOUND;
-    int beta = EVAL_BOUND;
+    int alpha = -(self->eval_bound);
+    int beta = self->eval_bound;
     int temp;
     int iter_depth = 1;
     int max_depth = 80-(self->turn*2-((self->playing == 'W') ? 2 : 1));
@@ -919,8 +993,8 @@ int     ChessAI_trnMoveAlphabeta(ChessAI* self, int duration) {
         if (elapsed) { break; }
         debug("Setting new best move...");
         best = t_best;
-        alpha = -EVAL_BOUND;
-        beta = EVAL_BOUND;
+        alpha = -(self->eval_bound);
+        beta = self->eval_bound;
         if (++iter_depth > max_depth) {
             temp = iter_depth;
             break;
@@ -966,7 +1040,7 @@ int     ChessAI_stdAlphabeta(ChessAI* self, int depth, int alpha, int beta) {
 
     int moves[MAX_MOVES];
     int count = ChessAI_movesEvaluated(self, moves);
-    int score = -EVAL_BOUND;
+    int score = -(self->eval_bound);
 
     for (int i=0; i<count; ++i) {
         ChessAI_move(self, moves[i]);
@@ -1002,7 +1076,7 @@ bool    ChessAI_trnAlphabeta(ChessAI* self, int* ret_score, unsigned long long s
 
     int moves[MAX_MOVES];
     int count = ChessAI_movesEvaluated(self, moves);
-    int score = -EVAL_BOUND;
+    int score = -(self->eval_bound);
     int temp = 0;
 
     for (int i=0; i<count; ++i) {
@@ -1044,6 +1118,17 @@ bool    isValid(int row, int col) {
 /************************  UTILITY FUNCTIONS  **************************/
 int     max(int a, int b) {
     return (a > b) ? (a) : (b);
+}
+
+
+int     arrmax(int* arr, int num) {
+    int curr = arr[0];
+
+    for (int i=1; i<num; ++i) {
+        if (arr[i] > curr) { curr = arr[i]; }
+    }
+
+    return curr;
 }
 
 

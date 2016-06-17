@@ -17,8 +17,8 @@ int main(int argc, char** argv) {
     ChessAI white;
     ChessAI black;
     
-    ChessAI_init(&white);
-    ChessAI_init(&black);
+    ChessAI_init(&white, NULL);
+    ChessAI_init(&black, NULL);
 
     while ((w_wins + b_wins + ties) < 10) {
         ChessAI_reset(&white);
