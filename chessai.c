@@ -17,6 +17,7 @@
 
 // char    BLACK_PIECES[] = "kqbnrp";
 
+/*
 int     DEFAULT_KING_POS_VALUES[] = {
     20000, 20000, 20000, 20000, 20000,
     20000, 20000, 20000, 20000, 20000,
@@ -72,6 +73,7 @@ int     DEFAULT_PAWN_POS_VALUES[] = {
 };
 
 int DEFAULT_EVAL_BOUND = 20000 + 2000*6 + 500 + 300 + 300 + 1;
+*/
 
 
 
@@ -101,6 +103,11 @@ void    ChessAI_init(ChessAI* self, char* fname) {
             !self->knight_pos_values || !self->rook_pos_values || !self->pawn_pos_values) {
         ChessAI_readPieceValues(self, "default.pval");
     }
+    self->eval_bound = (arrmax(self->king_pos_values, 30) +
+            arrmax(self->queen_pos_values, 30)*6 +
+            arrmax(self->bishop_pos_values, 30) +
+            arrmax(self->knight_pos_values, 30) +
+            arrmax(self->rook_pos_values, 30) + 1);
     debug("Leaving ChessAI_init");
 }
 
