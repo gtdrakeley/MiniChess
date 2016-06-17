@@ -28,8 +28,11 @@ int main(int argc, char** argv) {
     }
     
     {
+        char* fname = NULL;
+
+        if (argc == 2) { fname = argv[1]; }
         ChessAI ai;
-        ChessAI_init(&ai, NULL);
+        ChessAI_init(&ai, fname);
         zeromq_start(&ai);
         ChessAI_destroy(&ai);
     }
