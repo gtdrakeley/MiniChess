@@ -7,6 +7,7 @@
 #include "main.h"
 #include "move.h"
 #include "slavesort.h"
+#include "strmtok.h"
 #include "debug.h"
 
 
@@ -941,17 +942,19 @@ int     ChessAI_trnMoveAlphabeta(ChessAI* self, int duration) {
             char movestr[7];
             ChessAI_getBoard(self, c_boardstr);
             MOVE_TO_STR(movestr, best); movestr[5] = '\0';
-            printf("------  Tournament Move Statistics  ------\n");
-            printf("    %-12s%-14sMove:             %s (%d -> %d)\n", strtok(c_boardstr, "\n"), movestr, MOVE_SRC(best), MOVE_DEST(best));
-            printf("    %-12s%-14sDepth Reached:    %d\n", strtok(NULL, "\n"), iter_depth-1);
+            strmtok_init(2, o_boardstr, c_boardstr);
+            printf("------------  Tournament Move Statistics  ------------\n");
+            printf("    %-12s%-14sMove:             %s (%d -> %d)\n", strmtok(o_boardstr, "\n"), strmtok(c_boardstr, "\n"), movestr, MOVE_SRC(best), MOVE_DEST(best));
+            printf("    %-7s-->  %-14sDepth Reached:    %d\n", strmtok(o_boardstr, "\n"), strmtok(c_boardstr, "\n"), iter_depth-1);
             // printf("    %-12sRecursive Calls:  %ld\n", strtok(NULL, "\n"), self->recur_calls);
-            printf("    %-7s-->  %-14sRecursive Calls:  NOT IMPLEMENTED\n", strtok(NULL, "\n"));
-            printf("    %-12s%-14sTime Allotted:    %d ms\n", strtok(NULL, "\n"), m_duration);
+            printf("    %-12s%-14sRecursive Calls:  NOT IMPLEMENTED\n", strmtok(o_boardstr, "\n"), strmtok(c_boardstr, "\n"));
+            printf("    %-7s-->  %-14sTime Allotted:    %d ms\n", strmtok(o_boardstr, "\n"), strmtok(c_boardstr, "\n"), m_duration);
             unsigned long long actual = msec()-start;
-            printf("    %-7s-->  %-14s---- Actual:      %lld ms\n", strtok(NULL, "\n"), actual);
-            printf("    %-12s%-14s---- Remaining:   %lld ms\n", strtok(NULL, "\n"), duration-actual);
-            printf("    %-12s%s\n", strtok(NULL, "\n"));
+            printf("    %-12s%-14s---- Actual:      %lld ms\n", strmtok(o_boardstr, "\n"), strmtok(c_boardstr, "\n"), actual);
+            printf("    %-7s-->  %-14s---- Remaining:   %lld ms\n", strmtok(o_boardstr, "\n"), strmtok(c_boardstr, "\n"), duration-actual);
+            printf("    %-12s%s\n", strmtok(o_boardstr, "\n"), strmtok(c_boardstr, "\n"));
             printf("\n\n");
+            strmtok_end();
           );
 
     return best;

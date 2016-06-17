@@ -52,7 +52,7 @@ void    strmtok_init(int num, ...) {
 }
 
 
-char*   strmtok_token(char* base, char* delims) {
+char*   strmtok(char* base, char* delims) {
     int c_idx = find_current(base);
     char* current = CURRENTS[c_idx];
     
