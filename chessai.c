@@ -111,7 +111,7 @@ void    ChessAI_destroy(ChessAI* self) {
 /*****************************  METHODS  *******************************/
 void    ChessAI_sync(ChessAI* self, ChessAI* other) {
     char board[42] = {'\0'};
-    
+
     ChessAI_getBoard(self, board);
     ChessAI_setBoard(other, board);
 }
@@ -382,7 +382,7 @@ void    ChessAI_move(ChessAI* self, int move) {
                 break;
         }
     }
-    
+
     if (self->playing == 'W') {
         self->playing = 'B';
     } else {
@@ -759,15 +759,15 @@ int     ChessAI_movesShuffled(ChessAI* self, int* out) {
     }
 
     /*
-    for (int i=count-1; i>0; --i) {
-        r = RAND_INT(0, i);
-        if (r == i) { continue; }
-        out[i] ^= out[r];
-        out[r] ^= out[i];
-        out[i] ^= out[r];
+       for (int i=count-1; i>0; --i) {
+       r = RAND_INT(0, i);
+       if (r == i) { continue; }
+       out[i] ^= out[r];
+       out[r] ^= out[i];
+       out[i] ^= out[r];
 
-    }
-    */
+       }
+       */
 
     return count;
 }
@@ -784,7 +784,7 @@ int     ChessAI_movesEvaluated(ChessAI* self, int* out) {
     }
 
     slavesort(evals, out, count);
-    
+
     free(evals);
 
     return count;
@@ -793,17 +793,17 @@ int     ChessAI_movesEvaluated(ChessAI* self, int* out) {
 
 int     ChessAI_moveRandom(ChessAI* self) {
     int moves[MAX_MOVES];
-    
+
     ChessAI_movesShuffled(self, moves);
     ChessAI_move(self, moves[0]);
-    
+
     return moves[0];
 }
 
 
 int     ChessAI_moveGreedy(ChessAI* self) {
     int moves[MAX_MOVES];
-    
+
     ChessAI_movesEvaluated(self, moves);
     ChessAI_move(self, moves[0]);
 
@@ -840,7 +840,7 @@ int     ChessAI_negamax(ChessAI* self, int depth, int duration) {
     int moves[MAX_MOVES];
     int count = ChessAI_movesShuffled(self, moves);
     int score = -EVAL_BOUND;
-    
+
     for (int i=0; i<count; ++i) {
         ChessAI_move(self, moves[i]);
         score = max(score, -ChessAI_negamax(self, depth-1, duration));
@@ -930,27 +930,29 @@ int     ChessAI_trnMoveAlphabeta(ChessAI* self, int duration) {
     for (int i=0; i<(iter_depth-temp); ++i) {
         ChessAI_undo(self);
     }
+    OUTPUT(
+            char o_boardstr[42];
+            ChessAI_getBoard(self, o_boardstr);
+          );
     ChessAI_move(self, best);
-    // debug("Clearing history...");
-    // ChessAI_clearHistory(self);
 
     OUTPUT(
-        char boardstr[42];
-        char movestr[7];
-        ChessAI_getBoard(self, boardstr);
-        MOVE_TO_STR(movestr, best); movestr[5] = '\0';
-        printf("------  Tournament Move Statistics  ------\n");
-        printf("    %-12sMove:             %s (%d -> %d)\n", strtok(boardstr, "\n"), movestr, MOVE_SRC(best), MOVE_DEST(best));
-        printf("    %-12sDepth Reached:    %d\n", strtok(NULL, "\n"), iter_depth-1);
-        // printf("    %-12sRecursive Calls:  %ld\n", strtok(NULL, "\n"), self->recur_calls);
-        printf("    %-12sRecursive Calls:  NOT IMPLEMENTED\n", strtok(NULL, "\n"));
-        printf("    %-12sTime Allotted:    %d ms\n", strtok(NULL, "\n"), m_duration);
-        unsigned long long actual = msec()-start;
-        printf("    %-12s---- Actual:      %lld ms\n", strtok(NULL, "\n"), actual);
-        printf("    %-12s---- Remaining:   %lld ms\n", strtok(NULL, "\n"), duration-actual);
-        printf("    %s\n", strtok(NULL, "\n"));
-        printf("\n\n");
-    );
+            char c_boardstr[42];
+            char movestr[7];
+            ChessAI_getBoard(self, c_boardstr);
+            MOVE_TO_STR(movestr, best); movestr[5] = '\0';
+            printf("------  Tournament Move Statistics  ------\n");
+            printf("    %-12s%-14sMove:             %s (%d -> %d)\n", strtok(c_boardstr, "\n"), movestr, MOVE_SRC(best), MOVE_DEST(best));
+            printf("    %-12s%-14sDepth Reached:    %d\n", strtok(NULL, "\n"), iter_depth-1);
+            // printf("    %-12sRecursive Calls:  %ld\n", strtok(NULL, "\n"), self->recur_calls);
+            printf("    %-7s-->  %-14sRecursive Calls:  NOT IMPLEMENTED\n", strtok(NULL, "\n"));
+            printf("    %-12s%-14sTime Allotted:    %d ms\n", strtok(NULL, "\n"), m_duration);
+            unsigned long long actual = msec()-start;
+            printf("    %-7s-->  %-14s---- Actual:      %lld ms\n", strtok(NULL, "\n"), actual);
+            printf("    %-12s%-14s---- Remaining:   %lld ms\n", strtok(NULL, "\n"), duration-actual);
+            printf("    %-12s%s\n", strtok(NULL, "\n"));
+            printf("\n\n");
+          );
 
     return best;
 }
